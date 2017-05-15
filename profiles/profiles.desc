@@ -7,9 +7,9 @@
 #arch		profile_directory				status
 
 # AMD64 Profiles
-amd64		container/amd64					dev
+amd64		calculate/amd64					dev
 
 # x86 Profiles
-x86		container/x86					dev
+x86		calculate/x86					dev
 
 # vim: set ts=8
