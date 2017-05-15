@@ -1,0 +1,11 @@
+# Calculate name=world format=world
+
+#?in(os_linux_pkglist, container)!=#
+!sys-boot/grub:2
+!sys-boot/os-prober
+!sys-kernel/calculate-sources
+!sys-fs/nfs-utils
+!media-gfx/gfxboot-themes-calculate
+!sys-apps/v86d
+#in#
+
