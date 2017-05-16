@@ -1,6 +1,6 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, container)!=#
+#?in(os_linux_pkglist, calculate)!=#
 !sys-boot/grub:2
 !sys-boot/os-prober
 !sys-kernel/calculate-sources
