@@ -1,1 +1,1 @@
-sys-apps/calculate-utils -grub -client -console -desktop -qt4 -pxe -server
+sys-apps/calculate-utils -install -client -console -desktop -qt4 -pxe -server
