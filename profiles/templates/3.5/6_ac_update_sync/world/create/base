@@ -1,0 +1,8 @@
+# Calculate name=world format=world
+
+#?in(os_linux_pkglist, CCDX)!=#
+media-fonts/terminus-font
+sys-apps/calculate-toolkit
+sys-apps/ifplugd
+sys-apps/less
+#in#
