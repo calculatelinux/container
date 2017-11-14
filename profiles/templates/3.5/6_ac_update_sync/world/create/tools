@@ -38,7 +38,6 @@ sys-apps/smartmontools
 sys-apps/usb_modeswitch
 sys-apps/usbutils
 sys-auth/pam_update
-sys-block/gparted
 sys-fs/btrfs-progs
 sys-fs/cryptsetup
 sys-fs/dmraid

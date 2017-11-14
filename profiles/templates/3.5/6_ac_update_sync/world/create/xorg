@@ -3,5 +3,5 @@
 #?in(os_linux_pkglist, CCDX)!=#
 app-misc/xorg-meta
 x11-misc/lightdm
-x11-misc/light-locker
+x11-misc/xscreensaver
 #in#
