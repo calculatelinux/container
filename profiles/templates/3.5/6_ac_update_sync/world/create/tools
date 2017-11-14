@@ -5,7 +5,6 @@ app-admin/hardinfo
 app-admin/hddtemp
 app-admin/logrotate
 app-admin/sudo
-app-admin/testdisk
 app-arch/lbzip2
 app-arch/p7zip
 app-arch/pigz
@@ -15,7 +14,6 @@ app-cdr/cdrtools
 app-cdr/dvd+rw-tools
 app-editors/vim
 app-misc/mc
-app-misc/tmux
 app-pda/usbmuxd
 app-portage/portage-utils
 app-vim/colorschemes
@@ -25,7 +23,6 @@ sys-apps/acl
 sys-apps/dmidecode
 sys-apps/ethtool
 sys-apps/gptfdisk
-sys-apps/hdparm
 sys-apps/inxi
 sys-apps/keyexec
 sys-apps/lm_sensors
@@ -38,17 +35,12 @@ sys-apps/smartmontools
 sys-apps/usb_modeswitch
 sys-apps/usbutils
 sys-auth/pam_update
-sys-fs/btrfs-progs
 sys-fs/cryptsetup
 sys-fs/dmraid
 sys-fs/dosfstools
 sys-fs/exfat-utils
 sys-fs/fuse-exfat
-sys-fs/mdadm
 sys-fs/mtools
-sys-fs/ntfs3g
-sys-fs/reiserfsprogs
-sys-fs/xfsprogs
 sys-power/acpi
 sys-power/cpupower
 sys-power/powernowd
