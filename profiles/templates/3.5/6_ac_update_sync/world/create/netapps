@@ -3,8 +3,6 @@
 #?in(os_linux_pkglist, CCDX)!=#
 app-text/wgetpaste
 mail-client/claws-mail
-net-analyzer/nmap
-net-analyzer/traceroute
 net-im/gajim
 net-irc/hexchat
 net-misc/remmina

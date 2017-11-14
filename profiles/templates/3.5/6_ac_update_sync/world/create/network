@@ -5,11 +5,9 @@ net-dialup/pptpclient
 net-dialup/rp-pppoe
 net-dialup/xl2tpd
 net-dns/bind-tools
-net-firewall/shorewall
 net-misc/networkmanager-l2tp
 net-misc/networkmanager-openvpn
 net-misc/networkmanager-pptp
 net-misc/networkmanager-vpnc
-net-misc/ntp
 net-misc/vconfig
 #in#
