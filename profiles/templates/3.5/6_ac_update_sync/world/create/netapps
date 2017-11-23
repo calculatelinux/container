@@ -4,6 +4,7 @@
 app-text/wgetpaste
 mail-client/claws-mail
 net-im/gajim
+net-im/gajim-httpupload
 net-irc/hexchat
 net-misc/remmina
 net-misc/whois
