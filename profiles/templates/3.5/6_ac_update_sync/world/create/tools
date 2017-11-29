@@ -27,7 +27,6 @@ sys-apps/gptfdisk
 sys-apps/inxi
 sys-apps/keyexec
 sys-apps/lm_sensors
-sys-apps/memtest86+
 sys-apps/mlocate
 sys-apps/pciutils
 sys-apps/pcmciautils
