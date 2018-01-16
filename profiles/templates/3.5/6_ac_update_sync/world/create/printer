@@ -1,6 +1,7 @@
 # Calculate name=world format=world
 
 #?in(os_linux_pkglist, CCDX)!=#
+app-admin/system-config-printer
 media-gfx/xsane
 net-print/cnijfilter
 net-print/cups
