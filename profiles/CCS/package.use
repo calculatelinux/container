@@ -1,2 +1,0 @@
-# removed unnecessary dependence
-sys-fs/eudev -hwdb -kmod
