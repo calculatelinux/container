@@ -1,0 +1,8 @@
+# Calculate format=world name=world ini(overlay-distros.world)<#-cut()-#
+
+#-ini(overlay-distros.world,#-cut()-#)-#
+
+#?in(os_linux_pkglist, CCDX)!=#
+x11-misc/qt5ct
+x11-themes/adwaita-qt
+#in#

@@ -4,6 +4,8 @@
 media-gfx/calculate-wallpapers
 media-gfx/dm-themes-calculate
 media-gfx/lightdm-themes-calculate
+x11-misc/qt5ct
+x11-themes/adwaita-qt
 x11-themes/calculate-icon-theme
 x11-themes/claws-mail-theme-calculate
 x11-themes/elementary-icon-theme
