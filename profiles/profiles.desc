@@ -7,7 +7,6 @@
 #arch		profile_directory				status
 
 # AMD64 Profiles
-amd64		CCS/amd64					dev
-amd64		CCDX/amd64					dev
+amd64		CCS/amd64					stable
 
 # vim: set ts=8
