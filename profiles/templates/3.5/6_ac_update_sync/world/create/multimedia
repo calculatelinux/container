@@ -6,3 +6,9 @@ media-sound/pavucontrol
 media-sound/qastools
 media-video/smplayer
 #in#
+
+#?in(os_linux_pkglist, CCG)!=#
+media-sound/alsa-utils
+media-sound/pulseaudio
+#in#
+

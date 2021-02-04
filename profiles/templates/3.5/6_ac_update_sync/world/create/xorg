@@ -5,3 +5,11 @@ app-misc/xorg-meta
 x11-misc/lightdm
 x11-misc/xscreensaver
 #in#
+
+#?in(os_linux_pkglist, CCG)!=#
+x11-apps/mesa-progs
+x11-apps/xrandr
+x11-apps/xsetroot
+x11-base/xorg-server
+x11-misc/sddm
+#in#

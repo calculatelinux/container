@@ -1,5 +1,9 @@
 # Calculate name=world format=world
 
+#?in(os_linux_pkglist, CCG, CCDX)!=#
+x11-misc/x11vnc
+#in#
+
 #?in(os_linux_pkglist, CCDX)!=#
 app-text/wgetpaste
 mail-client/claws-mail
@@ -10,6 +14,4 @@ net-misc/remmina
 net-misc/whois
 net-p2p/deluge
 www-client/firefox
-www-plugins/adobe-flash
-x11-misc/x11vnc
 #in#

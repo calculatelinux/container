@@ -6,3 +6,7 @@ sys-apps/calculate-toolkit
 sys-apps/ifplugd
 sys-apps/less
 #in#
+
+#?in(os_linux_pkglist, CCG)!=#
+app-portage/gentoolkit
+#in#
