@@ -9,4 +9,5 @@ sys-apps/less
 
 #?in(os_linux_pkglist, CCG)!=#
 app-portage/gentoolkit
+virtual/fake-sources
 #in#
