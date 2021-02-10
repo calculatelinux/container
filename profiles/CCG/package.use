@@ -1,1 +1,3 @@
+# Unnecessary dependency
 sys-apps/calculate-utils -dbus -qt5 desktop
+x11-themes/calculate-icon-theme -qt5
