@@ -1,0 +1,1 @@
+# Calculate append=skip mergepkg(games-util/steam-launcher)!=&&ini(update.steam)!=off&&ini(ver.steam)==

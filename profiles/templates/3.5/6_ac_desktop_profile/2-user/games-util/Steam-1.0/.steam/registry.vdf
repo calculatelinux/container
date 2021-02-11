@@ -1,0 +1,39 @@
+"Registry"
+{
+	"HKCU"
+	{
+		"Software"
+		{
+			"Valve"
+			{
+				"Steam"
+				{
+#?os_locale_lang==fr_FR#
+					"steamglobal"
+					{
+						"language"		"french"
+					}
+					"language"		"french"
+#os_locale_lang#
+#?os_locale_lang==ru_RU#
+					"steamglobal"
+					{
+						"language"		"russian"
+					}
+					"language"		"russian"
+#os_locale_lang#
+#?os_locale_lang==de_DE#
+					"steamglobal"
+					{
+						"language"		"german"
+					}
+					"language"		"german"
+#os_locale_lang#
+					"AutoLoginUser"		""
+					"RememberPassword"		"1"
+					"StartupMode"		"1"
+				}
+			}
+		}
+	}
+}
