@@ -2,13 +2,13 @@
 
 #?in(os_linux_pkglist, CCDX, CCG)!=#
 app-admin/logrotate
+app-admin/syslog-ng
 app-arch/lbzip2
 app-arch/p7zip
 app-arch/pigz
 app-editors/vim
 app-vim/colorschemes
-virtual/cron
-virtual/logger
+sys-process/cronie
 #in#
 
 #?in(os_linux_pkglist, CCDX)!=#
