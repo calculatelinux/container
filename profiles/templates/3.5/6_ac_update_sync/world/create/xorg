@@ -13,4 +13,6 @@ x11-apps/xsetroot
 x11-base/xorg-server
 x11-misc/edid-data
 x11-misc/sddm
+# missing dependency for x11-drivers/nvidia-drivers
+sys-devel/m4
 #in#
