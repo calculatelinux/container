@@ -1,5 +1,9 @@
 # Calculate name=world format=world
 
+#?in(os_linux_pkglist, calculate)!=#
+sys-apps/busybox
+#in#
+
 #?in(os_linux_pkglist, CCDX)!=#
 media-fonts/terminus-font
 sys-apps/calculate-toolkit
