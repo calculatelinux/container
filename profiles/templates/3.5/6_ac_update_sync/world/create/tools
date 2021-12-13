@@ -7,6 +7,7 @@ app-arch/lbzip2
 app-arch/p7zip
 app-arch/pigz
 app-editors/vim
+app-text/tree
 app-vim/colorschemes
 sys-process/cronie
 #in#
