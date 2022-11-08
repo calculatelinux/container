@@ -1,0 +1,18 @@
+# Calculate path=/var/calculate/bin name=#-cut(1,.)-# chmod=755 comment=#
+#!/bin/bash
+set -ueo pipefail
+export PATH="/lib/rc/bin:$PATH"
+source /var/calculate/config/taiga
+
+rabbit_configure(){
+	if [[ ! -e /var/lib/rabbitmq/mnesia ]]
+	then
+		/etc/init.d/rabbitmq start
+	
+		rabbitmqctl add_user $RABBITMQ_USER $RABBITMQ_PASSWORD
+		rabbitmqctl add_vhost taiga
+		rabbitmqctl set_permissions -p taiga $RABBITMQ_USER ".*" ".*" ".*"
+	fi
+}
+
+rabbit_configure

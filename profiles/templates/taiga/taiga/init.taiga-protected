@@ -1,0 +1,21 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=#
+#!/sbin/openrc-run
+# Copyright 2022 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+name="Taiga-protected daemon"
+description="Protected attachments"
+pidfile=/run/taiga-protected.pid
+command_user=taiga
+output_log=/var/log/taiga-protected.log
+error_log=/var/log/taiga-protected.log
+directory=/var/calculate/www/taiga/taiga-protected
+start_stop_daemon_args=""
+command="/var/calculate/www/taiga/taiga-protected/.venv/bin/gunicorn"
+command_args="--workers 4 --timeout 60 --log-level=info --access-logfile - --bind 0.0.0.0:8003 server:app"
+source /var/calculate/www/taiga/taiga-protected/.venv/bin/activate
+command_background=true
+
+start_pre() {
+    checkpath -f -o taiga -m 0600 /var/log/taiga-protected.log
+}

@@ -1,0 +1,164 @@
+# Calculate path=/var/calculate/bin name=#-cut(1,.)-# chmod=755 comment=#
+#!/bin/bash
+export PATH="/lib/rc/bin:$PATH"
+set -ueo pipefail
+
+source /var/calculate/config/taiga
+
+replace=(
+	"taiga-back/settings/config.py" ""
+	"('PASSWORD':).*"			"\1 '${PGSQL_PASSWORD}',"
+	"^.*(SECRET_KEY =).*"			"\1 \"${SECRET_KEY}\""
+	"^.*(TAIGA_SITES_SCHEME =).*"		"\1 \"${PROTOCOL}\""
+	"^.*(TAIGA_SITES_DOMAIN =).*"		"\1 \"${TAIGA_SITES_DOMAIN}\""
+	"^.*(MEDIA_ROOT =).*"			"\1 '/var/calculate/www/taiga/taiga-back/media'"
+	"^.*(DEFAULT_FROM_EMAIL =).*"		"\1 '${FROM_EMAIL}'"
+	"^.*(EMAIL_USE_TLS =).*"		"\1 '${SMTP_TLS}'"
+	"^.*(EMAIL_USE_SSL =).*"		"\1 '${SMTP_SSL}'"
+	"^.*(EMAIL_HOST =).*"			"\1 '${SMTP_HOST}'"
+	"^.*(EMAIL_PORT =).*"			"\1 ${SMTP_PORT}"
+	"^.*(EMAIL_HOST_USER =).*"		"\1 '${SMTP_USER}'"
+	"^.*(EMAIL_HOST_PASSWORD =).*"		"\1 '${SMTP_PASSWORD}'"
+	"(\"url\": \"amqp://).*(:5672/taiga\")"	"\1${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost\2"
+	"^.*(CELERY_BROKER_URL =).*"		"\1 \"amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost:5672/taiga\""
+	"^.*(CELERY_TIMEZONE =).*"		"\1 'Europe/Moscow'"
+	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
+	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 True"
+
+	"taiga-front-dist/dist/conf.json" ""
+	"(\"api\":).*"				"\1 \"${PROTOCOL}://${TAIGA_SITES_DOMAIN}/api/v1/\","
+	"(\"eventsUrl\":).*"			"\1 \"wss://${TAIGA_SITES_DOMAIN}/events\","
+	"(\"defaultLanguage\":).*"		"\1 \"ru\","
+	"(\"publicRegisterEnabled\":).*"	"\1 true,"
+	"(\"supportUrl\":).*"			"\1 \"${PROTOCOL}://${TAIGA_SITES_DOMAIN}\","
+	"(\"gravatar\":).*"			"\1 false,"
+
+	"taiga-events/.env" ""
+	"^.*(RABBITMQ_URL=).*"			"\1\"amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost:5672/taiga\""
+	"^.*(SECRET=).*"			"\1\"${SECRET_KEY}\""
+
+	"taiga-protected/.env" ""
+	"^.*(SECRET_KEY=).*"			"\1\"${SECRET_KEY}\""
+)
+
+homedir=/var/calculate/www/taiga
+if [[ -d $homedir ]]
+then
+	cd $homedir
+else
+	eerror "Отсутствует директория $homedir!"
+	exit 1
+fi
+
+check_conf(){
+	conf=
+	for (( i=0; i < ${#replace[@]}; i += 2 ))
+	do
+		from=${replace[$i]}
+		to=${replace[$i+1]}
+
+		if [[ $to == '' ]]
+		then
+			conf=$from
+			continue
+		fi
+		if [[ ! -e $conf ]]
+		then
+			eerror "Не найден файл ~/taiga/$conf. Установите Taiga выполнив 'install-taiga'."
+			exit 2
+		fi
+
+		grep -qE "$from" $conf || exit 1
+	done
+}
+
+check_show(){
+	conf=
+	for (( i=0; i < ${#replace[@]}; i += 2 ))
+	do
+		from=${replace[$i]}
+		to=${replace[$i+1]}
+		if [[ $to == '' ]]
+		then
+			conf=$from
+			echo "$conf"
+			continue
+		fi
+
+		err=0
+
+		grep -qE "$from" $conf || err=1
+
+		if [[ $err == 0 ]]
+		then
+			einfo $from
+		else
+			eerror $from || true
+		fi
+		eend $err || true
+	done
+}
+
+configure_conf(){
+	conf=
+	for (( i=0; i < ${#replace[@]}; i += 2 ))
+	do
+		from=${replace[$i]}
+		to=${replace[$i+1]}
+
+		if [[ $to == '' ]]
+		then
+			if [[ $conf != '' ]]
+			then
+				eend
+			fi
+			conf=$from
+			ebegin $conf
+			continue
+		fi
+
+		sed -i -E "s|$from|$to|g" $conf
+	done
+	eend
+}
+
+show_conf(){
+	conf=
+	for (( i=0; i < ${#replace[@]}; i += 2 ))
+	do
+		from=${replace[$i]}
+		to=${replace[$i+1]}
+
+		if [[ $to == '' ]]
+		then
+			conf=$from
+			echo '#-------------------------------------------------------------------------'
+			echo " $conf"
+			echo '#-------------------------------------------------------------------------'
+			continue
+		fi
+
+		grep -E "$from" $conf
+	done
+}
+
+ebegin 'Проверка настраиваемых переменных'
+`check_conf` || {
+	if [[ $? == 1 ]]
+	then
+		check_show
+	fi	
+	exit
+}
+eend
+
+einfo 'Настройка конфигурационных файлов:'
+configure_conf
+
+if [[ $# == 0 ]]
+then
+	einfo "Для отображения настроенных опций выполните '$0 show'."
+else
+	einfo 'Настроенные параметры:'
+	show_conf
+fi

@@ -1,0 +1,32 @@
+# Calculate path=/var/calculate/bin name=#-cut(1,.)-# chmod=755 comment=#
+#!/bin/bash
+
+set -ueo pipefail
+export PATH="/lib/rc/bin:$PATH"
+source /var/calculate/config/taiga
+
+ebegin 'Проверка выполненной базовой настройки'
+if [[ ! -e /var/lib/postgresql/12 ]]
+then
+	echo Выполните настройку 'emerge --config =dev-db/postgresql-12.12'.
+	exit 1
+fi
+eend
+
+ebegin 'Проверка запущенного PostgreSQL'
+if [[ $(ls /run/postgresql/.*lock 2>/dev/null | wc -l) == 0 ]]
+then
+	echo Запустите PostgreSQL
+	exit 1
+fi
+eend
+
+ebegin 'Проверка наличия роли taiga'
+$(psql -U taiga -d taiga -c '\dt' 2&>/dev/null) || {
+	echo Пароль: $PGSQL_PASSWORD
+	createuser -U postgres -P taiga
+	createdb -U postgres -O taiga taiga
+}
+eend
+
+cl-core-setup -n postgresql

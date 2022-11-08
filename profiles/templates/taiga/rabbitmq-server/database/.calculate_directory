@@ -1,0 +1,1 @@
+# Calculate path=/var/calculate name=rabbitmq chmod=750 chown=rabbitmq:rabbitmq

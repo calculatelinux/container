@@ -1,10 +1,10 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCDX, CDC, CCG, CCS)!=#
+#?in(os_linux_pkglist, CCDX, CDC, CCG, CCS, taiga)!=#
 app-text/tree
 #in#
 
-#?in(os_linux_pkglist, CCDX, CDC, CCG)!=#
+#?in(os_linux_pkglist, CCDX, CDC, CCG, taiga)!=#
 app-admin/logrotate
 app-admin/syslog-ng
 app-arch/lbzip2

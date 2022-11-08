@@ -1,0 +1,25 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=#
+#!/sbin/openrc-run
+# Copyright 2022 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+name="Taiga-async-tasks daemon"
+description="Async tasks, like bulk email or exports generation"
+pidfile=/run/taiga-async.pid
+command_user=taiga
+output_log=/var/log/taiga-async.log
+error_log=/var/log/taiga-async.log
+directory=/var/calculate/www/taiga/taiga-back
+start_stop_daemon_args=""
+command="/var/calculate/www/taiga/taiga-back/.venv/bin/celery"
+command_args="-A taiga.celery worker -B --concurrency 4 -l INFO"
+source /var/calculate/www/taiga/taiga-back/.venv/bin/activate
+command_background=true
+
+depend() {
+    need rabbitmq
+}
+
+start_pre() {
+    checkpath -f -o taiga -m 0600 /var/log/taiga-async.log
+}
