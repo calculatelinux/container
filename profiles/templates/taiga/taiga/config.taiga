@@ -2,7 +2,7 @@
 PROTOCOL='http'
 TAIGA_SITES_DOMAIN='taiga.example.org'
 FROM_EMAIL='taiga@example.org'
-SMTP_HOST='smtp@example.org'
+SMTP_HOST='smtp.example.org'
 SMTP_PORT=25
 SMTP_TLS='False'
 SMTP_SSL='False'
