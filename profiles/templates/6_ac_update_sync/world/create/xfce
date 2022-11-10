@@ -1,6 +1,6 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCDX, CCG)!=#
+#?in(os_linux_pkglist, CCDX, CCG, games)!=#
 x11-terms/xfce4-terminal
 #in#
 
@@ -24,7 +24,7 @@ xfce-extra/xfce4-taskmanager
 xfce-extra/xfce4-xkb-plugin
 #in#
 
-#?in(os_linux_pkglist, CCG)!=#
+#?in(os_linux_pkglist, CCG, games)!=#
 xfce-base/xfce4-panel
 xfce-base/xfwm4
 #in#

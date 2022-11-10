@@ -1,10 +1,10 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCDX, CDC, CCG, CCS, taiga)!=#
+#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games, CCS, taiga)!=#
 app-text/tree
 #in#
 
-#?in(os_linux_pkglist, CCDX, CDC, CCG, taiga)!=#
+#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games, taiga)!=#
 app-admin/logrotate
 app-admin/syslog-ng
 app-arch/lbzip2
@@ -15,7 +15,7 @@ app-vim/colorschemes
 sys-process/cronie
 #in#
 
-#?in(os_linux_pkglist, CDC)!=#
+#?in(os_linux_pkglist, CDC, directory)!=#
 sys-apps/calculate-server
 #in#
 

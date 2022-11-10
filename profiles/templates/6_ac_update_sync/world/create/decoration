@@ -1,6 +1,6 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCDX, CCG)!=#
+#?in(os_linux_pkglist, CCDX, CCG, games)!=#
 x11-themes/calculate-icon-theme
 #in#
 
@@ -17,6 +17,6 @@ x11-themes/gtk-engines
 x11-themes/xfwm4-themes
 #in#
 
-#?in(os_linux_pkglist, CCG)!=#
+#?in(os_linux_pkglist, CCG, games)!=#
 media-fonts/droid
 #in#

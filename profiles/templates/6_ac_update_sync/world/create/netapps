@@ -1,6 +1,6 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCG, CCDX)!=#
+#?in(os_linux_pkglist, CCG, games, CCDX)!=#
 x11-misc/x11vnc
 #in#
 

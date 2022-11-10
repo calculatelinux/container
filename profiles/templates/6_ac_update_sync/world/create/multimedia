@@ -7,7 +7,7 @@ media-sound/qastools
 media-video/smplayer
 #in#
 
-#?in(os_linux_pkglist, CCG)!=#
+#?in(os_linux_pkglist, CCG, games)!=#
 media-sound/alsa-utils
 media-sound/pulseaudio
 #in#
