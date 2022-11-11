@@ -9,14 +9,30 @@ then
 	exec su - taiga -c /var/calculate/bin/install-taiga
 fi
 
-source /var/calculate/config/taiga
+
+all=
+while IFS= read -r line
+do
+        if [[ $line == *"["* ]]
+        then
+                line=${line#*[}
+                line=${line%%]*}
+                sec=$line
+                continue
+        fi
+        com=${sec}_${line// =/=};
+        com=${com//= /=};
+        all="$com; $all"
+done < /var/calculate/ini.env
+eval $all
+
 
 if [[ ! -e ~/.node-live ]]
 then
-	einfo Установка Node.js
+	einfo 'Установка Node.js'
 	cd ~
-	nodeenv --node=$NODE .node-${NODE%%.*}
-	ln -sfT .node-${NODE%%.*} .node-live
+	nodeenv --node=$taiga_node .node-${taiga_node%%.*}
+	ln -sfT .node-${taiga_node%%.*} .node-live
 fi
 source ~/.node-live/bin/activate
 

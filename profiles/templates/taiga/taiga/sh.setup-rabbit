@@ -2,16 +2,31 @@
 #!/bin/bash
 set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
-source /var/calculate/config/taiga
+
+all=
+while IFS= read -r line
+do
+        if [[ $line == *"["* ]]
+        then
+                line=${line#*[}
+                line=${line%%]*}
+                sec=$line
+                continue
+        fi
+        com=${sec}_${line// =/=};
+        com=${com//= /=};
+        all="$com; $all"
+done < /var/calculate/ini.env
+eval $all
 
 rabbit_configure(){
 	if [[ ! -e /var/lib/rabbitmq/mnesia ]]
 	then
 		/etc/init.d/rabbitmq start
 	
-		rabbitmqctl add_user $RABBITMQ_USER $RABBITMQ_PASSWORD
+		rabbitmqctl add_user $taiga_rabbitmq_user $taiga_rabbitmq_password
 		rabbitmqctl add_vhost taiga
-		rabbitmqctl set_permissions -p taiga $RABBITMQ_USER ".*" ".*" ".*"
+		rabbitmqctl set_permissions -p taiga $taiga_rabbitmq_user ".*" ".*" ".*"
 	fi
 }
 
