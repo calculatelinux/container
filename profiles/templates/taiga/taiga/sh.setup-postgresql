@@ -13,6 +13,10 @@ do
                 sec=$line
                 continue
         fi
+	if [[ ${line:0:1} == '#' || $line == '' ]]
+	then
+		continue
+	fi
         com=${sec}_${line// =/=};
         com=${com//= /=};
         all="$com; $all"
