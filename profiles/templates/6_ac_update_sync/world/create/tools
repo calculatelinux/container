@@ -4,7 +4,7 @@
 app-text/tree
 #in#
 
-#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games, taiga)!=#
+#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games)!=#
 app-admin/logrotate
 app-admin/syslog-ng
 app-arch/lbzip2

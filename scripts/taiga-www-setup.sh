@@ -1,12 +1,16 @@
-# Calculate path=/var/calculate/bin name=#-cut(1,.)-# chmod=755 comment=#
 #!/bin/bash
+
 export PATH="/lib/rc/bin:$PATH"
 set -ueo pipefail
+
+source /var/db/repos/container/scripts/functions.sh
+get_ini
 
 regular(){
 	replace=(
 	"taiga-back/settings/config.py" ""
-	"('PASSWORD':).*"			"\1 '${taiga_pgsql_password}',"
+	"('USER':).*"				"\1 '${postgresql_taiga_user}',"
+	"('PASSWORD':).*"			"\1 '${postgresql_taiga_password}',"
 	"^.*(SECRET_KEY =).*"			"\1 \"${taiga_secret_key}\""
 	"^.*(TAIGA_SITES_SCHEME =).*"		"\1 \"${taiga_protocol}\""
 	"^.*(TAIGA_SITES_DOMAIN =).*"		"\1 \"${taiga_taiga_sites_domain}\""
@@ -18,8 +22,8 @@ regular(){
 	"^.*(EMAIL_PORT =).*"			"\1 ${taiga_smtp_port}"
 	"^.*(EMAIL_HOST_USER =).*"		"\1 '${taiga_smtp_user}'"
 	"^.*(EMAIL_HOST_PASSWORD =).*"		"\1 '${taiga_smtp_password}'"
-	"(\"url\": \"amqp://).*(:5672/taiga\")"	"\1${taiga_rabbitmq_user}:${taiga_rabbitmq_password}@localhost\2"
-	"^.*(CELERY_BROKER_URL =).*"		"\1 \"amqp://${taiga_rabbitmq_user}:${taiga_rabbitmq_password}@localhost:5672/taiga\""
+	"(\"url\": \"amqp://).*(:5672/taiga\")"	"\1${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost\2"
+	"^.*(CELERY_BROKER_URL =).*"		"\1 \"amqp://${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost:5672/taiga\""
 	"^.*(CELERY_TIMEZONE =).*"		"\1 '${taiga_timezone}'"
 	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
 	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${taiga_public_register}"
@@ -33,7 +37,7 @@ regular(){
 	"(\"gravatar\":).*"			"\1 false,"
 
 	"taiga-events/.env" ""
-	"^.*(RABBITMQ_URL=).*"			"\1\"amqp://${taiga_rabbitmq_user}:${taiga_rabbitmq_password}@localhost:5672/taiga\""
+	"^.*(RABBITMQ_URL=).*"			"\1\"amqp://${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost:5672/taiga\""
 	"^.*(SECRET=).*"			"\1\"${taiga_secret_key}\""
 
 	"taiga-protected/.env" ""
@@ -55,7 +59,7 @@ check_conf(){
 		fi
 		if [[ ! -e $conf ]]
 		then
-			eerror "Не найден файл ~/taiga/$conf. Установите Taiga выполнив 'install-taiga'."
+			eerror "~/taiga/$conf not found."
 			exit 2
 		fi
 
@@ -133,47 +137,22 @@ show_conf(){
 	done
 }
 
-
-read_vars(){
-	all=
-	while IFS= read -r line
-	do
-	        if [[ $line == *"["* ]]
-	        then
-	                line=${line#*[}
-	                line=${line%%]*}
-	                sec=$line
-	                continue
-	        fi
-		if [[ ${line:0:1} == '#' || $line == '' ]]
-		then
-			continue
-		fi
-	        com=${sec}_${line// =/=};
-	        com=${com//= /=};
-	        all="$com; $all"
-	done < /var/calculate/ini.env
-	eval $all
-}
-
 check_homedir(){
 	homedir=/var/calculate/www/taiga
 	if [[ -d $homedir ]]
 	then
 		cd $homedir
 	else
-		eerror "Отсутствует директория $homedir!"
+		eerror "Missing directory $homedir!"
 		exit 1
 	fi
 }
-
-read_vars
 
 regular
 
 check_homedir
 
-ebegin 'Проверка настраиваемых переменных'
+ebegin 'Checking Custom Variables'
 `check_conf` || {
 	if [[ $? == 1 ]]
 	then
@@ -184,14 +163,14 @@ ebegin 'Проверка настраиваемых переменных'
 }
 eend
 
-einfo 'Настройка конфигурационных файлов:'
+einfo 'Setting up configuration files'
 configure_conf
 
 if [[ $# == 0 ]]
 then
-	einfo "Для отображения настроенных опций выполните '$0 show'."
+	einfo "To display configured options, run '$0 show'."
 else
-	einfo 'Настроенные параметры:'
+	einfo 'Customized parameters:'
 	show_conf
 fi
 
