@@ -23,6 +23,8 @@ migrate_pgsql(){
 	cd taiga-back
 	source .venv/bin/activate
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py migrate --noinput
+
+	clear_buf
 	einfo create an administrator with strong password
 	CELERY_ENABLED=False DJANGO_SETTINGS_MODULE=settings.config python manage.py createsuperuser
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py loaddata initial_project_templates

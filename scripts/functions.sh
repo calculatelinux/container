@@ -21,3 +21,10 @@ get_ini(){
 	eval $all
 }
 
+# Clear stdin before reading
+clear_buf(){
+	while read -r -t 0
+		do read -r
+	done
+	read -t 0.01 -n 10000 discard
+}
