@@ -166,10 +166,8 @@ eend
 einfo 'Setting up configuration files'
 configure_conf
 
-if [[ $# == 0 ]]
+if [[ $# == 1 && $1 == 'show' ]]
 then
-	einfo "To display configured options, run '$0 show'."
-else
 	einfo 'Customized parameters:'
 	show_conf
 fi
