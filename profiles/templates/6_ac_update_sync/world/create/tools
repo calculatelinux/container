@@ -1,6 +1,6 @@
 # Calculate name=world format=world
 
-#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games, CCS, taiga)!=#
+#?in(os_linux_pkglist, CCDX, CDC, directory, CCG, games, CCS, scratch, taiga)!=#
 app-text/tree
 #in#
 
