@@ -7,9 +7,9 @@
 #arch		profile_directory				status
 
 # AMD64 Profiles
-amd64		scratch/amd64/20				stable
 amd64		directory/amd64/20				dev
 amd64		games/amd64/20					dev
+amd64		scratch/amd64/20				stable
 amd64		taiga/amd64/20					dev
 
 # vim: set ts=8
