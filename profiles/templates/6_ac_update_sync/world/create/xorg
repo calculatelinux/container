@@ -6,7 +6,7 @@ x11-misc/lightdm
 x11-misc/xscreensaver
 #in#
 
-#?in(os_linux_pkglist, CCG, games)!=#
+#?in(os_linux_pkglist, CCG, steam)!=#
 x11-apps/mesa-progs
 x11-apps/xrandr
 x11-apps/xsetroot

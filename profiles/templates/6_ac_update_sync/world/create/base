@@ -11,7 +11,7 @@ sys-apps/ifplugd
 sys-apps/less
 #in#
 
-#?in(os_linux_pkglist, CCG, games)!=#
+#?in(os_linux_pkglist, CCG, steam)!=#
 app-portage/gentoolkit
 sys-kernel/fake-sources
 #in#

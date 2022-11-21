@@ -4,6 +4,6 @@
 games-misc/games-envd
 #in#
 
-#?in(os_linux_pkglist, CCG, games)!=#
+#?in(os_linux_pkglist, CCG, steam)!=#
 games-util/steam-launcher
 #in#
