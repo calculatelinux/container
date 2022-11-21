@@ -7,6 +7,12 @@ source /var/db/repos/container/scripts/functions.sh
 get_ini
 
 regular(){
+	if [[ ${taiga_public_register} == 'True' ]]
+	then
+		local public_register='true'
+	else
+		local public_register='false'
+	fi
 	replace=(
 	"taiga-back/settings/config.py" ""
 	"('USER':).*"				"\1 '${postgresql_taiga_user}',"
@@ -16,8 +22,8 @@ regular(){
 	"^.*(TAIGA_SITES_DOMAIN =).*"		"\1 \"${taiga_taiga_sites_domain}\""
 	"^.*(MEDIA_ROOT =).*"			"\1 '/var/calculate/www/taiga/taiga-back/media'"
 	"^.*(DEFAULT_FROM_EMAIL =).*"		"\1 '${taiga_from_email}'"
-	"^.*(EMAIL_USE_TLS =).*"		"\1 '${taiga_smtp_tls}'"
-	"^.*(EMAIL_USE_SSL =).*"		"\1 '${taiga_smtp_ssl}'"
+	"^.*(EMAIL_USE_TLS =).*"		"\1 ${taiga_smtp_tls}"
+	"^.*(EMAIL_USE_SSL =).*"		"\1 ${taiga_smtp_ssl}"
 	"^.*(EMAIL_HOST =).*"			"\1 '${taiga_smtp_host}'"
 	"^.*(EMAIL_PORT =).*"			"\1 ${taiga_smtp_port}"
 	"^.*(EMAIL_HOST_USER =).*"		"\1 '${taiga_smtp_user}'"
@@ -27,12 +33,15 @@ regular(){
 	"^.*(CELERY_TIMEZONE =).*"		"\1 '${taiga_timezone}'"
 	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
 	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${taiga_public_register}"
+	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${taiga_max_private_projects}"
+	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${taiga_max_public_projects}"
 
 	"taiga-front-dist/dist/conf.json" ""
 	"(\"api\":).*"				"\1 \"${taiga_protocol}://${taiga_taiga_sites_domain}/api/v1/\","
 	"(\"eventsUrl\":).*"			"\1 \"wss://${taiga_taiga_sites_domain}/events\","
 	"(\"defaultLanguage\":).*"		"\1 \"${taiga_language}\","
-	"(\"publicRegisterEnabled\":).*"	"\1 true,"
+	"(\"publicRegisterEnabled\":).*"	"\1 ${public_register},"
+	"(\"feedbackEnabled\":).*"		"\1 false,"
 	"(\"supportUrl\":).*"			"\1 \"${taiga_protocol}://${taiga_taiga_sites_domain}\","
 	"(\"gravatar\":).*"			"\1 false,"
 
