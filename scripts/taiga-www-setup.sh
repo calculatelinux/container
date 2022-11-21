@@ -34,8 +34,8 @@ regular(){
 	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
 	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${taiga_public_register}"
 	"^.*(USER_EMAIL_ALLOWED_DOMAINS =).*"	"\1 $(arr_to_list $taiga_user_email_allowed_domains)"
-	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${taiga_max_private_projects}"
-	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${taiga_max_public_projects}"
+	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${taiga_max_private_projects_per_user}"
+	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${taiga_max_public_projects_per_user}"
 
 	"taiga-front-dist/dist/conf.json" ""
 	"(\"api\":).*"				"\1 \"${taiga_protocol}://${taiga_taiga_sites_domain}/api/v1/\","
