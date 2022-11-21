@@ -1,0 +1,11 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# protected
+#!/sbin/openrc-run
+
+pidfile="/run/check_crashed.pid"
+command="/usr/sbin/check-crashed"
+command_args="${RC_MONITOR_RESTART}"
+command_background=1
+
+depend() {
+	need taiga
+}

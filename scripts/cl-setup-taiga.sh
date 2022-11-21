@@ -25,8 +25,8 @@ if [[ ! -e /etc/runlevels/default/taiga ]]
 then
 	rc-update add taiga
 	rc-update -u
-	openrc
 fi
+openrc
 
 if [[ -z $show ]]
 then

@@ -1,0 +1,18 @@
+# Calculate chmod=755 path=/usr/sbin
+#!/bin/bash
+
+# Daemon restarts crashed services
+# list the monitored services in /etc/conf.d/check-crashed
+RC_MONITOR_RESTART=$@;
+
+while true; do
+	for svc in $(rc-status --crashed) ; do
+		for chk in $RC_MONITOR_RESTART ; do
+			if [ "$chk" = "$svc" ] ; then
+				rc-service $svc -- --nodeps restart
+				continue 2
+			fi
+	    	done
+	done
+	sleep 1
+done
