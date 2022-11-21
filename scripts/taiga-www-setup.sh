@@ -33,6 +33,7 @@ regular(){
 	"^.*(CELERY_TIMEZONE =).*"		"\1 '${taiga_timezone}'"
 	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
 	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${taiga_public_register}"
+	"^.*(USER_EMAIL_ALLOWED_DOMAINS =).*"	"\1 $(arr_to_list $taiga_user_email_allowed_domains)"
 	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${taiga_max_private_projects}"
 	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${taiga_max_public_projects}"
 
