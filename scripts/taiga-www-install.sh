@@ -22,6 +22,7 @@ source ~/.node-live/bin/activate
 
 set -u
 
+
 install_taiga_back(){
 	cd ~
 	einfo 'Backend Setup: Get the code'
