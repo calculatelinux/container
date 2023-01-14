@@ -3,15 +3,15 @@
 set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
 
-source /var/db/repos/container/scripts/functions.sh
-get_ini
+. /var/db/repos/container/scripts/functions.sh
+. /var/db/repos/calculate/scripts/ini.sh
 
 if [[ $UID == 0 ]]
 then
 	exit
 fi
 
-data=$(PGPASSWORD=$postgresql_taiga_password psql -U $postgresql_taiga_user -d $postgresql_taiga_database -c '\dt' 2>/dev/null)
+data=$(PGPASSWORD=${ini[postgresql.taiga_password]} psql -U ${ini[postgresql.taiga_user]} -d ${ini[postgresql.taiga_database]} -c '\dt' 2>/dev/null)
 
 if [[ -n $data ]]
 then

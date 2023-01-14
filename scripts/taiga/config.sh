@@ -3,11 +3,11 @@
 export PATH="/lib/rc/bin:$PATH"
 set -ueo pipefail
 
-source /var/db/repos/container/scripts/functions.sh
-get_ini
+. /var/db/repos/container/scripts/functions.sh
+. /var/db/repos/calculate/scripts/ini.sh
 
 regular(){
-	if [[ ${taiga_public_register} == 'True' ]]
+	if [[ ${ini[taiga.public_register]} == 'True' ]]
 	then
 		local public_register='true'
 	else
@@ -15,43 +15,43 @@ regular(){
 	fi
 	replace=(
 	"taiga-back/settings/config.py" ""
-	"('USER':).*"				"\1 '${postgresql_taiga_user}',"
-	"('PASSWORD':).*"			"\1 '${postgresql_taiga_password}',"
-	"^.*(SECRET_KEY =).*"			"\1 \"${taiga_secret_key}\""
-	"^.*(TAIGA_SITES_SCHEME =).*"		"\1 \"${taiga_protocol}\""
-	"^.*(TAIGA_SITES_DOMAIN =).*"		"\1 \"${taiga_taiga_sites_domain}\""
+	"('USER':).*"				"\1 '${ini[postgresql.taiga_user]}',"
+	"('PASSWORD':).*"			"\1 '${ini[postgresql.taiga_password]}',"
+	"^.*(SECRET_KEY =).*"			"\1 \"${ini[taiga.secret_key]}\""
+	"^.*(TAIGA_SITES_SCHEME =).*"		"\1 \"${ini[taiga.protocol]}\""
+	"^.*(TAIGA_SITES_DOMAIN =).*"		"\1 \"${ini[taiga.taiga_sites_domain]}\""
 	"^.*(MEDIA_ROOT =).*"			"\1 '/var/calculate/www/taiga/taiga-back/media'"
-	"^.*(DEFAULT_FROM_EMAIL =).*"		"\1 '${taiga_from_email}'"
-	"^.*(EMAIL_USE_TLS =).*"		"\1 ${taiga_smtp_tls}"
-	"^.*(EMAIL_USE_SSL =).*"		"\1 ${taiga_smtp_ssl}"
-	"^.*(EMAIL_HOST =).*"			"\1 '${taiga_smtp_host}'"
-	"^.*(EMAIL_PORT =).*"			"\1 ${taiga_smtp_port}"
-	"^.*(EMAIL_HOST_USER =).*"		"\1 '${taiga_smtp_user}'"
-	"^.*(EMAIL_HOST_PASSWORD =).*"		"\1 '${taiga_smtp_password}'"
-	"(\"url\": \"amqp://).*(:5672/taiga\")"	"\1${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost\2"
-	"^.*(CELERY_BROKER_URL =).*"		"\1 \"amqp://${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost:5672/taiga\""
-	"^.*(CELERY_TIMEZONE =).*"		"\1 '${taiga_timezone}'"
+	"^.*(DEFAULT_FROM_EMAIL =).*"		"\1 '${ini[taiga.from_email]}'"
+	"^.*(EMAIL_USE_TLS =).*"		"\1 ${ini[taiga.smtp_tls]}"
+	"^.*(EMAIL_USE_SSL =).*"		"\1 ${ini[taiga.smtp_ssl]}"
+	"^.*(EMAIL_HOST =).*"			"\1 '${ini[taiga.smtp_host]}'"
+	"^.*(EMAIL_PORT =).*"			"\1 ${ini[taiga.smtp_port]}"
+	"^.*(EMAIL_HOST_USER =).*"		"\1 '${ini[taiga.smtp_user]}'"
+	"^.*(EMAIL_HOST_PASSWORD =).*"		"\1 '${ini[taiga.smtp_password]}'"
+	"(\"url\": \"amqp://).*(:5672/taiga\")"	"\1${ini[rabbitmq.taiga_user]}:${ini[rabbitmq.taiga_password]}@localhost\2"
+	"^.*(CELERY_BROKER_URL =).*"		"\1 \"amqp://${ini[rabbitmq.taiga_user]}:${ini[rabbitmq.taiga_password]}@localhost:5672/taiga\""
+	"^.*(CELERY_TIMEZONE =).*"		"\1 '${ini[taiga.timezone]}'"
 	"^.*(ENABLE_TELEMETRY =).*"		"\1 False"
-	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${taiga_public_register}"
-	"^.*(USER_EMAIL_ALLOWED_DOMAINS =).*"	"\1 $(arr_to_list $taiga_user_email_allowed_domains)"
-	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${taiga_max_private_projects_per_user}"
-	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${taiga_max_public_projects_per_user}"
+	"^.*(PUBLIC_REGISTER_ENABLED =).*"	"\1 ${ini[taiga.public_register]}"
+	"^.*(USER_EMAIL_ALLOWED_DOMAINS =).*"	"\1 $(arr_to_list ${ini[taiga.user_email_allowed_domains]})"
+	"^.*(MAX_PRIVATE_PROJECTS_PER_USER =).*" "\1 ${ini[taiga.max_private_projects_per_user]}"
+	"^.*(MAX_PUBLIC_PROJECTS_PER_USER =).*" "\1 ${ini[taiga.max_public_projects_per_user]}"
 
 	"taiga-front-dist/dist/conf.json" ""
-	"(\"api\":).*"				"\1 \"${taiga_protocol}://${taiga_taiga_sites_domain}/api/v1/\","
-	"(\"eventsUrl\":).*"			"\1 \"wss://${taiga_taiga_sites_domain}/events\","
-	"(\"defaultLanguage\":).*"		"\1 \"${taiga_language}\","
+	"(\"api\":).*"				"\1 \"${ini[taiga.protocol]}://${ini[taiga.taiga_sites_domain]}/api/v1/\","
+	"(\"eventsUrl\":).*"			"\1 \"wss://${ini[taiga.taiga_sites_domain]}/events\","
+	"(\"defaultLanguage\":).*"		"\1 \"${ini[taiga.language]}\","
 	"(\"publicRegisterEnabled\":).*"	"\1 ${public_register},"
 	"(\"feedbackEnabled\":).*"		"\1 false,"
-	"(\"supportUrl\":).*"			"\1 \"${taiga_protocol}://${taiga_taiga_sites_domain}\","
+	"(\"supportUrl\":).*"			"\1 \"${ini[taiga.protocol]}://${ini[taiga.taiga_sites_domain]}\","
 	"(\"gravatar\":).*"			"\1 false,"
 
 	"taiga-events/.env" ""
-	"^.*(RABBITMQ_URL=).*"			"\1\"amqp://${rabbitmq_taiga_user}:${rabbitmq_taiga_password}@localhost:5672/taiga\""
-	"^.*(SECRET=).*"			"\1\"${taiga_secret_key}\""
+	"^.*(RABBITMQ_URL=).*"			"\1\"amqp://${ini[rabbitmq.taiga_user]}:${ini[rabbitmq.taiga_password]}@localhost:5672/taiga\""
+	"^.*(SECRET=).*"			"\1\"${ini[taiga.secret_key]}\""
 
 	"taiga-protected/.env" ""
-	"^.*(SECRET_KEY=).*"			"\1\"${taiga_secret_key}\""
+	"^.*(SECRET_KEY=).*"			"\1\"${ini[taiga.secret_key]}\""
 	)
 }
 

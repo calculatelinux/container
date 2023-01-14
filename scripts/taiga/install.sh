@@ -8,8 +8,8 @@ then
 	exit
 fi
 
-source /var/db/repos/container/scripts/functions.sh
-get_ini
+. /var/db/repos/container/scripts/functions.sh
+. /var/db/repos/calculate/scripts/ini.sh
 
 if [[ ! -e ~/.node-live ]]
 then
@@ -67,7 +67,7 @@ install_taiga_events(){
 	einfo 'Install the required JavaScript dependencies'
 	#source ~/.node-live/bin/activate
 	npm install
-	npm audit fix
+	npm audit fix --force
 
 	ebegin 'Create .env file based on the provided example'
 	cp .env.example .env

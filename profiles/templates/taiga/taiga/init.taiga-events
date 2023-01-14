@@ -1,4 +1,4 @@
-# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=#
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/taiga/.node-live)!=
 #!/sbin/openrc-run
 # Copyright 2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2

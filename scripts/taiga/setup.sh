@@ -10,20 +10,20 @@ then
 fi
 
 chown taiga:taiga /var/calculate/ini.env
-su - taiga -c '/var/db/repos/container/scripts/taiga-www-install.sh'
+su - taiga -c '/var/db/repos/container/scripts/taiga/install.sh'
 
-/var/db/repos/container/scripts/taiga-postgresql.sh
+/var/db/repos/container/scripts/taiga/postgresql.sh
 
-/var/db/repos/container/scripts/taiga-rabbitmq.sh
+/var/db/repos/container/scripts/taiga/rabbitmq.sh
 
-/var/db/repos/container/scripts/taiga-www-setup.sh $show
+/var/db/repos/container/scripts/taiga/config.sh $show
 
-su - taiga -c '/var/db/repos/container/scripts/taiga-www-migrate.sh'
+su - taiga -c '/var/db/repos/container/scripts/taiga/migrate.sh'
 
 
 if [[ ! -e /etc/runlevels/default/taiga ]]
 then
-	rc-update add taiga
+	cl-setup-system
 	rc-update -u
 fi
 openrc
@@ -32,3 +32,4 @@ if [[ -z $show ]]
 then
 	einfo "To display configured options, run 'cl-setup show'."
 fi
+
