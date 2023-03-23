@@ -6,7 +6,7 @@ set -ueo pipefail
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
-regular(){
+regular() {
 	if [[ ${ini[taiga.public_register]} == 'True' ]]
 	then
 		local public_register='true'
@@ -55,7 +55,7 @@ regular(){
 	)
 }
 
-check_conf(){
+check_conf() {
 	conf=
 	for (( i=0; i < ${#replace[@]}; i += 2 ))
 	do
@@ -77,7 +77,7 @@ check_conf(){
 	done
 }
 
-check_show(){
+check_show() {
 	conf=
 	for (( i=0; i < ${#replace[@]}; i += 2 ))
 	do
@@ -104,7 +104,7 @@ check_show(){
 	done
 }
 
-configure_conf(){
+configure_conf() {
 	conf=
 	for (( i=0; i < ${#replace[@]}; i += 2 ))
 	do
@@ -127,7 +127,7 @@ configure_conf(){
 	eend
 }
 
-show_conf(){
+show_conf() {
 	conf=
 	for (( i=0; i < ${#replace[@]}; i += 2 ))
 	do
@@ -147,7 +147,7 @@ show_conf(){
 	done
 }
 
-check_homedir(){
+check_homedir() {
 	homedir=/var/calculate/www/taiga
 	if [[ -d $homedir ]]
 	then

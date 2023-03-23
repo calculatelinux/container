@@ -6,19 +6,11 @@ export PATH="/lib/rc/bin:$PATH"
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
-if [[ $UID == 0 ]]
-then
-	exit
-fi
+[[ $UID == 0 ]] && exit
 
 data=$(PGPASSWORD=${ini[postgresql.taiga_password]} psql -U ${ini[postgresql.taiga_user]} -d ${ini[postgresql.taiga_database]} -c '\dt' 2>/dev/null)
 
-if [[ -n $data ]]
-then
-	exit 
-fi
-
-migrate_pgsql(){
+if [[ -e $data ]]; then
 	cd ~
 	cd taiga-back
 	source .venv/bin/activate
@@ -30,6 +22,5 @@ migrate_pgsql(){
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py loaddata initial_project_templates
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py compilemessages
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py collectstatic --noinput
-}
+fi
 
-migrate_pgsql

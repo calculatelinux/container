@@ -1,28 +1,25 @@
 #!/bin/bash
 
-set -eo pipefail
+set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
 
-if [[ $UID == 0 ]]
-then
-	exit
-fi
+[[ $UID == 0 ]] && exit
 
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
-if [[ ! -e ~/.node-live ]]
-then
+if [[ ! -e ~/.node-live ]]; then
 	einfo 'Install Node.js'
 	cd ~
-	nodeenv --node=$taiga_node .node-${taiga_node%%.*}
-	ln -sfT .node-${taiga_node%%.*} .node-live
+	nodeenv --node=${ini[taiga.node]} .node-${ini[taiga.node]%%.*}
+	ln -sfT .node-${ini[taiga.node]%%.*} .node-live
 fi
-source ~/.node-live/bin/activate
 
+set +u
+. ~/.node-live/bin/activate
 set -u
 
-install_taiga_back(){
+if [[ ! -e ~/taiga-back ]]; then
 	cd ~
 	einfo 'Backend Setup: Get the code'
 	git clone https://github.com/kaleidos-ventures/taiga-back.git taiga-back
@@ -43,9 +40,9 @@ install_taiga_back(){
 	ebegin 'Copy the example config file'
 	cp settings/config.py.prod.example settings/config.py
 	eend
-}
+fi
 
-install_taiga_front_dist(){
+if [[ ! -e ~/taiga-front-dist ]]; then
 	cd ~
 	einfo 'Frontend Setup: Get the code'
 	git clone https://github.com/kaleidos-ventures/taiga-front-dist.git taiga-front-dist
@@ -55,9 +52,9 @@ install_taiga_front_dist(){
 	ebegin 'Copy the example config file'
 	cp ~/taiga-front-dist/dist/conf.example.json ~/taiga-front-dist/dist/conf.json
 	eend
-}
+fi
 
-install_taiga_events(){
+if [[ ! -e ~/taiga-events ]]; then
 	cd ~
 	einfo 'Events Setup: Get the code'
 	git clone https://github.com/kaleidos-ventures/taiga-events.git taiga-events
@@ -72,9 +69,9 @@ install_taiga_events(){
 	ebegin 'Create .env file based on the provided example'
 	cp .env.example .env
 	eend
-}
+fi
 
-install_taiga_protected(){
+if [[ ! -e ~/taiga-protected ]]; then
 	cd ~
 	einfo 'Taiga protected Setup: Get the code'
 	git clone https://github.com/kaleidos-ventures/taiga-protected.git taiga-protected
@@ -92,18 +89,4 @@ install_taiga_protected(){
 	ebegin 'Copy the example config file'
 	cp ~/taiga-protected/env.sample ~/taiga-protected/.env
 	eend
-}
-
-#-----------------------------------------------------------------------------
-# Запуск
-#-----------------------------------------------------------------------------
-[[ ! -e ~/taiga-back ]] && install_taiga_back
-
-[[ ! -e ~/taiga-front-dist ]] && install_taiga_front_dist
-
-[[ ! -e ~/taiga-events ]] && install_taiga_events
-
-[[ ! -e ~/taiga-protected ]] && install_taiga_protected
-
-exit 0
-
+fi

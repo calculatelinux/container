@@ -1,35 +1,32 @@
 #!/bin/bash
+# Install Taiga in Production
+# https://docs.taiga.io/setup-production.html#_introduction
 
-export PATH="/lib/rc/bin:$PATH"
 set -ueo pipefail
+export PATH="/lib/rc/bin:$PATH"
 
-show=
-if [[ $# == 1  && $1 == 'show' ]]
-then
-	show='show'
-fi
+echo "Taiga setup"
 
-chown taiga:taiga /var/calculate/ini.env
+. /var/db/repos/calculate/scripts/ini.sh
+
+chown taiga: /var/calculate/ini.env
+
 su - taiga -c '/var/db/repos/container/scripts/taiga/install.sh'
 
 /var/db/repos/container/scripts/taiga/postgresql.sh
 
 /var/db/repos/container/scripts/taiga/rabbitmq.sh
 
-/var/db/repos/container/scripts/taiga/config.sh $show
+/var/db/repos/container/scripts/taiga/config.sh
 
 su - taiga -c '/var/db/repos/container/scripts/taiga/migrate.sh'
 
-
-if [[ ! -e /etc/runlevels/default/taiga ]]
-then
+if [[ ! -e /etc/runlevels/default/taiga ]]; then
 	cl-setup-system
 	rc-update -u
 fi
+
 openrc
 
-if [[ -z $show ]]
-then
-	einfo "To display configured options, run 'cl-setup show'."
-fi
+echo "All is done! Open the link ${ini[taiga.protocol]}://${ini[taiga.taiga_sites_domain]} on your browser."
 

@@ -2,12 +2,10 @@
 
 set -ueo pipefail
 
-if [[ -e /var/lib/rabbitmq/mnesia ]]
-then
-	exit
-fi
+test -e /var/lib/rabbitmq/mnesia && exit
 
 export PATH="/lib/rc/bin:$PATH"
+
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
@@ -16,3 +14,4 @@ export PATH="/lib/rc/bin:$PATH"
 rabbitmqctl add_user ${ini[rabbitmq.taiga_user]} ${ini[rabbitmq.taiga_password]}
 rabbitmqctl add_vhost taiga
 rabbitmqctl set_permissions -p taiga ${ini[rabbitmq.taiga_user]} ".*" ".*" ".*"
+
