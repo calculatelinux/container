@@ -10,7 +10,7 @@ export PATH="/lib/rc/bin:$PATH"
 
 data=$(PGPASSWORD=${ini[postgresql.taiga_password]} psql -U ${ini[postgresql.taiga_user]} -d ${ini[postgresql.taiga_database]} -c '\dt' 2>/dev/null)
 
-if [[ -e $data ]]; then
+if [[ -z $data ]]; then
 	cd ~
 	cd taiga-back
 	source .venv/bin/activate
@@ -23,4 +23,3 @@ if [[ -e $data ]]; then
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py compilemessages
 	DJANGO_SETTINGS_MODULE=settings.config python manage.py collectstatic --noinput
 fi
-

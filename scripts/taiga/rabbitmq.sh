@@ -14,4 +14,3 @@ export PATH="/lib/rc/bin:$PATH"
 rabbitmqctl add_user ${ini[rabbitmq.taiga_user]} ${ini[rabbitmq.taiga_password]}
 rabbitmqctl add_vhost taiga
 rabbitmqctl set_permissions -p taiga ${ini[rabbitmq.taiga_user]} ".*" ".*" ".*"
-

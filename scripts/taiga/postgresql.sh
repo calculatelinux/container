@@ -31,4 +31,3 @@ psql -U postgres -c "ALTER USER ${ini[postgresql.taiga_user]} WITH PASSWORD '${i
 cl-core-setup -n postgresql -f
 
 /etc/init.d/postgresql-$(pgver slot) restart
-
