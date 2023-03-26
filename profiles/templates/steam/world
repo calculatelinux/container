@@ -1,0 +1,28 @@
+# Calculate env=update ac_update_sync==on path=/var/lib/portage cl_update_world==merge||cl_update_world==rebuild format=world
+app-admin/logrotate
+app-admin/syslog-ng
+app-arch/lbzip2
+app-arch/p7zip
+app-arch/pigz
+app-portage/gentoolkit
+app-text/tree
+app-vim/colorschemes
+games-util/steam-launcher
+media-fonts/droid
+media-sound/alsa-utils
+media-sound/pulseaudio
+sys-kernel/fake-sources
+sys-process/cronie
+x11-apps/mesa-progs
+x11-apps/xrandr
+x11-apps/xsetroot
+x11-base/xorg-server
+x11-misc/edid-data
+x11-misc/sddm
+x11-misc/x11vnc
+x11-terms/xfce4-terminal
+x11-themes/calculate-icon-theme
+xfce-base/xfce4-panel
+xfce-base/xfwm4
+# missing dependency for x11-drivers/nvidia-drivers
+sys-devel/m4

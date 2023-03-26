@@ -1,4 +1,0 @@
-# Calculate format=samba name=ini.env ini(overlay-container.remerge)<#-cl_pass_file-# merge=x11-themes/adwaita-icon-theme,x11-misc/sddm
-
-[overlay-container]
-remerge = #-cl_pass_file-#

@@ -1,12 +1,11 @@
 #!/bin/bash
 
-export PATH="/lib/rc/bin:$PATH"
 set -ueo pipefail
+export PATH="/lib/rc/bin:$PATH"
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
 cd /var/calculate/www/taiga
-
 configure_conf() {
 	local config=$1
 	einfo "Setting up $config ..."
@@ -15,12 +14,12 @@ configure_conf() {
 		var=${replace[$i]}
 		val=${replace[$i+1]}
 		grep -qE "^([#;]\s*)?\s*['\"]?$var['\"]?\s*[:=]" $config || eerror "Parametr '$var' is not found."
-
 		sed -i -E "s|^([#;]\s*)?(\s*)(['\"]?)(${var})(['\"]?)(\s*)([:=])(\s*)?.*$|\2\3\4\5\6\7\8${val}|g" \
 			$config
 	done
 	eend
 }
+
 [[ ${ini[taiga.public_register]} == 'True' ]] && public_register='true' || public_register='false'
 replace=(
 	USER				\'${ini[postgresql.taiga_user]}\',
@@ -28,7 +27,7 @@ replace=(
 	SECRET_KEY			\"${ini[taiga.secret_key]}\"
 	TAIGA_SITES_SCHEME		\"${ini[taiga.protocol]}\"
 	TAIGA_SITES_DOMAIN		\"${ini[taiga.taiga_sites_domain]}\"
-	MEDIA_ROOT			'/var/calculate/www/taiga/taiga-back/media'
+	MEDIA_ROOT			\'/var/calculate/www/taiga/taiga-back/media\'
 	DEFAULT_FROM_EMAIL		\'${ini[taiga.from_email]}\'
 	EMAIL_USE_TLS			${ini[taiga.smtp_tls]}
 	EMAIL_USE_SSL			${ini[taiga.smtp_ssl]}

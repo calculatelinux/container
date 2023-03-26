@@ -1,9 +1,0 @@
-# Calculate name=world format=world
-
-#?in(os_linux_pkglist, CCDX)!=#
-games-misc/games-envd
-#in#
-
-#?in(os_linux_pkglist, CCG, steam)!=#
-games-util/steam-launcher
-#in#
