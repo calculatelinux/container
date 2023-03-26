@@ -14,9 +14,9 @@ configure_conf() {
 	for (( i=0; i < ${#replace[@]}; i += 2 )); do
 		var=${replace[$i]}
 		val=${replace[$i+1]}
-		grep -qE "$var" $config || eerror "Parametr '$var' is not found."
+		grep -qE "^([#;]\s*)?\s*['\"]?$var['\"]?\s*[:=]" $config || eerror "Parametr '$var' is not found."
 
-		sed -i -E "s|^(\s*)(['\"]?)(${var})(['\"]?)(\s*)([:=])(\s*)?.*$|\1\2\3\4\5\6\7${val}|g" \
+		sed -i -E "s|^([#;]\s*)?(\s*)(['\"]?)(${var})(['\"]?)(\s*)([:=])(\s*)?.*$|\2\3\4\5\6\7\8${val}|g" \
 			$config
 	done
 	eend
