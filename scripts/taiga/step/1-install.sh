@@ -3,7 +3,8 @@
 set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
 
-[[ $UID == 0 ]] && exit
+SCRIPT=$(readlink -f $0)
+[[ $UID == 0 ]] && exec su - taiga -c "$SCRIPT"
 
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
@@ -22,7 +23,7 @@ set -u
 if [[ ! -e ~/taiga-back ]]; then
 	cd ~
 	einfo 'Backend Setup: Get the code'
-	git clone https://github.com/kaleidos-ventures/taiga-back.git taiga-back
+	git clone --branch stable --depth 1 https://github.com/kaleidos-ventures/taiga-back.git taiga-back
 	cd taiga-back
 	git checkout stable
 
@@ -45,7 +46,7 @@ fi
 if [[ ! -e ~/taiga-front-dist ]]; then
 	cd ~
 	einfo 'Frontend Setup: Get the code'
-	git clone https://github.com/kaleidos-ventures/taiga-front-dist.git taiga-front-dist
+	git clone --branch stable --depth 1 https://github.com/kaleidos-ventures/taiga-front-dist.git taiga-front-dist
 	cd taiga-front-dist
 	git checkout stable
 
@@ -57,7 +58,7 @@ fi
 if [[ ! -e ~/taiga-events ]]; then
 	cd ~
 	einfo 'Events Setup: Get the code'
-	git clone https://github.com/kaleidos-ventures/taiga-events.git taiga-events
+	git clone --branch stable --depth 1 https://github.com/kaleidos-ventures/taiga-events.git taiga-events
 	cd taiga-events
 	git checkout stable
 
@@ -74,7 +75,7 @@ fi
 if [[ ! -e ~/taiga-protected ]]; then
 	cd ~
 	einfo 'Taiga protected Setup: Get the code'
-	git clone https://github.com/kaleidos-ventures/taiga-protected.git taiga-protected
+	git clone --branch stable --depth 1 https://github.com/kaleidos-ventures/taiga-protected.git taiga-protected
 	cd taiga-protected
 	git checkout stable
 

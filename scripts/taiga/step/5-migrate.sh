@@ -2,11 +2,11 @@
 
 set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
+SCRIPT=$(readlink -f $0)
+[[ $UID == 0 ]] && exec su - taiga -c "$SCRIPT"
 
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
-
-[[ $UID == 0 ]] && exit
 
 data=$(PGPASSWORD=${ini[postgresql.taiga_password]} psql -U ${ini[postgresql.taiga_user]} -d ${ini[postgresql.taiga_database]} -c '\dt' 2>/dev/null)
 
