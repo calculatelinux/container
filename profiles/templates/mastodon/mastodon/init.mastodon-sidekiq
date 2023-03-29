@@ -1,0 +1,22 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/mastodon/.node-live)!=
+#!/sbin/openrc-run
+
+name="Mastodon Sidekiq daemon"
+description=""
+pidfile=/run/mastodon-sidekiq.pid
+command_user=mastodon
+output_log=/var/log/mastodon-sidekiq.log
+error_log=/var/log/mastodon-sidekiq.log
+directory=/var/calculate/www/mastodon/live
+start_stop_daemon_args="-e RAILS_ENV=production -e DB_POOL=25 -e MALLOC_ARENA_MAX=2"
+command=/var/calculate/www/mastodon/.rbenv/shims/bundle
+command_args="exec sidekiq -c 25"
+command_background=true
+
+depend() {
+    use postgresql net redis
+}
+
+start_pre() {
+    checkpath -f -o mastodon -m 0600 /var/log/mastodon-sidekiq.log
+}

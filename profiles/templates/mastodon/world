@@ -1,0 +1,12 @@
+# Calculate env=update ac_update_sync==on path=/var/lib/portage cl_update_world==merge||cl_update_world==rebuild format=world
+dev-db/postgresql:14
+dev-python/nodeenv
+dev-python/setuptools
+sys-devel/gettext
+dev-db/redis
+media-gfx/imagemagick
+media-video/ffmpeg
+www-servers/nginx
+dev-util/pkgconf
+dev-libs/protobuf
+net-dns/libidn

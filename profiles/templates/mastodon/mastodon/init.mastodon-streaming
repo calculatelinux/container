@@ -1,0 +1,21 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/mastodon/.node-live)!=
+#!/sbin/openrc-run
+name="Mastodon streaming daemon"
+description=""
+pidfile=/run/mastodon-streaming.pid
+command_user=mastodon
+output_log=/var/log/mastodon-streaming.log
+error_log=/var/log/mastodon-streaming.log
+directory=/var/calculate/www/mastodon/live
+start_stop_daemon_args="-e NODE_ENV=production -e PORT=4000 -e STREAMING_CLUSTER_NUM=1"
+command=/var/calculate/www/mastodon/.node-live/bin/node
+command_args="./streaming"
+command_background=true
+
+depend() {
+    use postgresql net redis
+}
+
+start_pre() {
+        checkpath -f -o mastodon -m 0600 /var/log/mastodon-streaming.log
+}
