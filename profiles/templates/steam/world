@@ -5,7 +5,6 @@ app-arch/lbzip2
 app-arch/p7zip
 app-arch/pigz
 app-portage/gentoolkit
-app-text/tree
 app-vim/colorschemes
 games-util/steam-launcher
 media-fonts/droid

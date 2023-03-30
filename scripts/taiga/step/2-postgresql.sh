@@ -25,7 +25,7 @@ emerge --config =dev-db/postgresql-$(pgver)
 
 psql -U postgres -c "ALTER USER postgres WITH PASSWORD '${ini[postgresql.postgres_password]}'"
 psql -U postgres -c "CREATE ROLE ${ini[postgresql.taiga_user]} WITH login"
-psql -U postgres -c "CREATE DATABASE taiga OWNER taiga"
+psql -U postgres -c "CREATE DATABASE ${ini[postgresql.taiga_database]} OWNER ${ini[postgresql.taiga_user]}"
 psql -U postgres -c "ALTER USER ${ini[postgresql.taiga_user]} WITH PASSWORD '${ini[postgresql.taiga_password]}'"
 
 cl-core-setup -n postgresql -f
