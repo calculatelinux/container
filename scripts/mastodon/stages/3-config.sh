@@ -27,8 +27,9 @@ replace=(
 	LOCAL_DOMAIN			"${ini[mastodon.local_domain]}"
 	DB_USER				"${ini[postgresql.mastodon_user]}"
 	DB_PASS				"${ini[postgresql.mastodon_password]}"
-	SMTP_FROM_ADDRESS		"${ini[mastodon.smtp_from_address]}"
+	SMTP_FROM_ADDRESS		"Mastodon <${ini[mastodon.smtp_from_address]}>"
 	SMTP_PORT			"${ini[mastodon.smtp_port]}"
+	SMTP_SERVER			"${ini[mastodon.smtp_server]}"
 
 )
 configure_conf live/.env.production
