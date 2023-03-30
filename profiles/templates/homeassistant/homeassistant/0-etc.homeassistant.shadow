@@ -1,2 +1,2 @@
 # Calculate append=after path=/etc name=#-cut(2,.)-# grep(/etc/#-cut(2,.)-#,#-cut(1,.)-#)== protected
-homeassistant:!:19443::::::
+homeassistant:!:19446::::::

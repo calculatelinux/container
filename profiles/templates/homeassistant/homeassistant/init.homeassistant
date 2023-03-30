@@ -1,5 +1,7 @@
-# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/homeassistant/.venv)!=
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/homeassistant/.homeassistant)!=
 #!/sbin/openrc-run
+# Copyright 2022 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
 
 description="Open-source home automation platform"
 
@@ -25,8 +27,7 @@ command_background=yes
 pidfile=/run/homeassistant.pid
 
 depend() {
-    need net postgresql
-#    need net nginx postgresql
+    need net nginx
 }
 
 start_pre() {

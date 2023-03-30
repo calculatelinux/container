@@ -13,16 +13,12 @@ if [[ ! -e ~/.venv ]]; then
 	einfo 'Create a virtualenv'
 	cd ~
 	python -m venv .venv
+	echo 'source ~/.venv/bin/activate' >> ~/.bashrc
 	source .venv/bin/activate
 
-	echo
-	einfo 'Install Python dependencies'
+	einfo 'Install all Python dependencies'
 	python -m pip install wheel
 
-	echo
 	einfo 'Install Home Assistant'
 	pip install homeassistant
-
-	eend
 fi
-
