@@ -1,4 +1,4 @@
-# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/homeassistant/.homeassistant)!=
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/etc/homeassistant/configuration.yaml)!=
 #!/sbin/openrc-run
 # Copyright 2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
@@ -12,12 +12,13 @@ serverlog="/var/log/homeassistant/server.log"
 warningslog="/var/log/homeassistant/warnings.log"
 retry="20"
 
-command=/var/calculate/www/homeassistant/.venv/bin/hass
+command=/var/calculate/www/homeassistant/.venv-live/bin/hass
 directory=/var/calculate/www/homeassistant
 
 start_stop_daemon_args="--user $user --stdout $stdoutlog --stderr $serverlog --wait 10"
 
 command_args="
+	--config /etc/homeassistant
 	--log-file $warningslog
 	--log-rotate-days 9
         ${HASS_OPTS}
@@ -27,7 +28,7 @@ command_background=yes
 pidfile=/run/homeassistant.pid
 
 depend() {
-    need net nginx
+    need net nginx postgresql
 }
 
 start_pre() {

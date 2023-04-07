@@ -1,0 +1,2 @@
+# Calculate path=/etc name=#-cut(1,.)-# append=after protected
+zigbee2mqtt:x:998:
