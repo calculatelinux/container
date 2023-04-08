@@ -1,2 +1,2 @@
 # Calculate path=/etc name=#-cut(1,.)-# append=after protected
-homeassistant:x:999:999:Home Assistant Program User:/var/calculate/www/homeassistant:/sbin/nologin
+homeassistant:x:999:999:Home Assistant Program User:/var/calculate/www/homeassistant:/bin/bash

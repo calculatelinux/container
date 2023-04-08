@@ -9,33 +9,61 @@ SCRIPT=$(readlink -f $0)
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
 
-if [[ ! -e ~/.venv-live ]]; then
+if [[ ! -e ~/zigbee2mqtt-live ]]; then
+	cd
 	einfo 'Clone Zigbee2MQTT repository'
-	git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git ~/
-	chown -R zigbee2mqtt: ~/
+	ver=$(curl -s https://api.github.com/repos/Koenkk/zigbee2mqtt/releases/latest | grep tag_name | cut -d '"' -f 4) && echo "Latest Zigbee2MQTT version is ${ver}"
+	wget -q https://github.com/Koenkk/zigbee2mqtt/archive/refs/tags/${ver}.zip -O zigbee2mqtt-${ver}.zip
+	einfo 'Extract the archive'
+	unzip -q -d versions zigbee2mqtt-${ver}.zip
+	rm zigbee2mqtt-${ver}.zip
+	ln -sf versions/zigbee2mqtt-${ver} zigbee2mqtt-live
 
-	einfo 'Create a virtualenv'
-	python -m venv ~/.venv-live
-	echo '. ~/.venv-live/bin/activate' >> ~/.bashrc
-	echo '. ~/.venv-live/bin/activate' >> ~/.bash_profile
-	
-	. ~/.venv-live/bin/activate
+	einfo 'Install python env'
+	python -m venv zigbee2mqtt-live/.venv
+
+	einfo 'Activate environment'
+	. zigbee2mqtt-live/.venv/bin/activate
+
+	einfo 'Upgrade pip, wheel and setuptools'
+	pip install --upgrade pip wheel setuptools
 
 	einfo 'Install node environment'
-	python -m pip nodeenv
+	pip install nodeenv
 
 	einfo 'Init node environment'
-	nodeenv -p -n 16.15.0
-
-	einfo 'Deactivate and activate environment to be sure'
-	deactivate
-	. ~/.venv-live/bin/activate
+	nodeenv -p -n ${ini[zigbee2mqtt.nodeenv]}
 
 	einfo 'Install dependencies'
-	cd
+	cd zigbee2mqtt-live
 	npm ci
+	cd
 
-#	ha_ver=$(pip list | grep ^zigbee2mqtt | awk '{print $2}')
-#	mv ~/.venv-live ~/.venv-${ha_ver}
-#	ln -s ~/.venv-${ha_ver} ~/.venv-live
+	echo '. ~/zigbee2mqtt-live/.venv/bin/activate' >> .bashrc
+	echo '. ~/zigbee2mqtt-live/.venv/bin/activate' >> .bash_profile
+
+	einfo 'Setup zigbee2mqtt'
+	mv zigbee2mqtt-live/data/configuration.yaml zigbee2mqtt-live/data/configuration.yaml.old
+	cat > zigbee2mqtt-live/data/configuration.yaml << EOF
+# Home Assistant integration (MQTT discovery)
+homeassistant: false
+
+# allow new devices to join
+permit_join: true
+
+# MQTT settings
+mqtt:
+  # MQTT base topic for zigbee2mqtt MQTT messages
+  base_topic: zigbee2mqtt
+  # MQTT server URL
+  server: 'mqtt://localhost'
+  # MQTT server authentication, uncomment if required:
+  #   # user: my_user
+  # password: my_password
+
+# Serial settings
+serial:
+  # Location of USB sniffer
+  port: ${ini[zigbee2mqtt.dev]}
+EOF
 fi
