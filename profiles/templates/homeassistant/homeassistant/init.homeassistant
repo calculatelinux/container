@@ -18,7 +18,7 @@ directory=/var/calculate/www/homeassistant
 start_stop_daemon_args="--user $user --stdout $stdoutlog --stderr $serverlog --wait 10"
 
 command_args="
-	--config /etc/homeassistant
+	--config /var/calculate/homeassistant
 	--log-file $warningslog
 	--log-rotate-days 9
         ${HASS_OPTS}

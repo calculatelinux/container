@@ -1,0 +1,1 @@
+# Calculate path=/var/calculate name=zigbee2mqtt chmod=700 chown=zigbee2mqtt:zigbee2mqtt

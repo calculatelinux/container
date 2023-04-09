@@ -14,11 +14,19 @@ SCRIPT=$(readlink -f $0)
 
 cd
 ver=$(curl -s https://api.github.com/repos/Koenkk/zigbee2mqtt/releases/latest | grep tag_name | cut -d '"' -f 4) && echo "Latest Zigbee2MQTT version is ${ver}"
+[[ -z $ver ]] && eerror 'The latest version of zigbee2mqtt is not defined!'
+
 wget -q https://github.com/Koenkk/zigbee2mqtt/archive/refs/tags/${ver}.zip -O zigbee2mqtt-${ver}.zip
 einfo 'Extract the archive'
 unzip -q -d versions zigbee2mqtt-${ver}.zip
 rm zigbee2mqtt-${ver}.zip
 ln -sf versions/zigbee2mqtt-${ver} zigbee2mqtt-live
+
+if [[ -n "$(ls -A /var/calculate/zigbee2mqtt)" ]]; then
+	mv versions/zigbee2mqtt-${ver}/data/* /var/calculate/zigbee2mqtt
+	rmdir versions/zigbee2mqtt-${ver}/data
+	ln -s /var/calculate/zigbee2mqtt versions/zigbee2mqtt-${ver}/data
+fi
 
 einfo 'Install python env'
 python -m venv zigbee2mqtt-live/.venv
