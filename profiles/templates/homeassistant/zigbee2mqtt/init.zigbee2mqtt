@@ -1,0 +1,33 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/zigbee2mqtt/zigbee2mqtt-live)!=
+#!/sbin/openrc-run
+# Copyright 2023 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+description="Allows you to use your Zigbee devices without the vendor's bridge or gateway"
+
+user="zigbee2mqtt"
+group="zigbee2mqtt"
+
+command="/var/calculate/www/zigbee2mqtt/zigbee2mqtt-live/.venv/bin/npm"
+directory="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live"
+command_args="start"
+command_user="${user}:${group}"
+command_background="yes"
+pidfile="/run/${RC_SVCNAME}.pid"
+output_log="/var/log/${RC_SVCNAME}.log"
+error_log="${output_log}"
+export PATH="/var/calculate/www/zigbee2mqtt/zigbee2mqtt-live/.venv/bin:$PATH"
+
+depend() {
+	need mosquitto
+}
+
+stop(){
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --quiet --retry 20 --pidfile $pidfile
+	eend $?
+}
+
+start_pre() {
+	checkpath --file --owner $user --mode 0644 $output_log
+}

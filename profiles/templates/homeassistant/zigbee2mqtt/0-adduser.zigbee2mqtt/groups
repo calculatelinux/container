@@ -1,0 +1,3 @@
+# Calculate path=/etc name=group format=patch protected
+<reg>dialout:x:20:homeassistant</reg>
+<text>dialout:x:20:homeassistant,zigbee2mqtt</text>

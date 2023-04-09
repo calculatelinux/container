@@ -1,0 +1,7 @@
+# Calculate path=/etc/conf.d name=#-cut(1,.)-# format=openrc
+# /etc/conf.d/homeassistant: configuration for /etc/init.d/homeassistant
+
+# Switches to pass to hass. See 'hass --help' for
+# a description of the possible switches.
+#
+HASS_OPTS=""

@@ -3,9 +3,11 @@
 set -ueo pipefail
 export PATH="/lib/rc/bin:$PATH"
 
+test -e /etc/homeassistant/configuration.yaml && exit
+
 SCRIPT=$(readlink -f $0)
 [[ $UID == 0 ]] && exec su - homeassistant -c "$SCRIPT"
-source .venv-live/bin/activate
+. homeassistant-live/bin/activate
 
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
