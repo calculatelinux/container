@@ -22,7 +22,7 @@ unzip -q -d versions zigbee2mqtt-${ver}.zip
 rm zigbee2mqtt-${ver}.zip
 ln -sf versions/zigbee2mqtt-${ver} zigbee2mqtt-live
 
-if [[ -n "$(ls -A /var/calculate/zigbee2mqtt)" ]]; then
+if [[ -z "$(ls -A /var/calculate/zigbee2mqtt)" ]]; then
 	mv versions/zigbee2mqtt-${ver}/data/* /var/calculate/zigbee2mqtt
 	rmdir versions/zigbee2mqtt-${ver}/data
 	ln -s /var/calculate/zigbee2mqtt versions/zigbee2mqtt-${ver}/data
