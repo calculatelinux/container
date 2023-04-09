@@ -1,0 +1,7 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=#
+#!/sbin/openrc-run
+
+pidfile="/run/check_crashed.pid"
+command="/var/calculate/bin/check-crashed"
+command_args="${RC_MONITOR_RESTART}"
+command_background=1
