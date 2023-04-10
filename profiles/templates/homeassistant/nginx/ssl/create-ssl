@@ -1,5 +1,7 @@
 # Calculate run=/bin/bash
 
+[[ -n "$(ls -A /var/calculate/ssl)" ]] && exit
+
 cd /var/calculate/ssl
 openssl req -new -x509 -nodes -subj "/CN=calculate.root" -newkey rsa:2048 -keyout ca.key -out ca.crt -reqexts v3_req -extensions v3_ca
 openssl req -new -nodes -sha256 -newkey rsa:2048 -config /var/db/repos/container/profiles/ini.env -out domain.csr -keyout privkey.pem
