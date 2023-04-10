@@ -55,7 +55,7 @@ ebegin 'Setup zigbee2mqtt'
 mv zigbee2mqtt-live/data/configuration.yaml zigbee2mqtt-live/data/configuration.yaml.old
 cat > zigbee2mqtt-live/data/configuration.yaml << EOF
 # Home Assistant integration (MQTT discovery)
-homeassistant: false
+homeassistant: true
 
 # allow new devices to join
 permit_join: true
@@ -67,19 +67,13 @@ mqtt:
   # MQTT server URL
   server: 'mqtt://localhost'
   # MQTT server authentication, uncomment if required:
-  # user: my_user
-  # password: my_password
+  user: ${ini[mosquitto.homeassistant_user]}
+  password: '${ini[mosquitto.homeassistant_password]}'
 
 # Serial settings
 serial:
   # Location of USB sniffer
   port: ${ini[zigbee2mqtt.dev]}
 frontend: true
-
-mqtt:
-  base_topic: zigbee2mqtt
-  server: mqtt://localhost
-  user: ${ini[mosquitto.homeassistant_user]}
-  password: '${ini[mosquitto.homeassistant_password]}'
 EOF
 eend

@@ -31,6 +31,12 @@ http:
 
 recorder:
   db_url: postgresql://${ini[postgresql.homeassistant_user]}:${ini[postgresql.homeassistant_password]}@127.0.0.1/${ini[postgresql.homeassistant_database]}
+
+panel_iframe:
+  zigbee:
+    title: "Zigbee2mqtt"
+    url: "http://${ini[homeassistant.domain]}:8080"
+    icon: mdi:zigbee
 EOF
 
 echo
