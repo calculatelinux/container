@@ -75,5 +75,11 @@ serial:
   # Location of USB sniffer
   port: ${ini[zigbee2mqtt.dev]}
 frontend: true
+
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost
+  user: ${ini[mosquitto.homeassistant_user]}
+  password: '${ini[mosquitto.homeassistant_password]}'
 EOF
 eend

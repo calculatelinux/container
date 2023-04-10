@@ -1,2 +1,2 @@
 # Calculate format=openrc path=/etc/conf.d name=#-cut(1,.)-#
-RC_MONITOR_RESTART="zigbee2mqtt homeassistant"
+RC_MONITOR_RESTART="zigbee2mqtt homeassistant mosquitto"
