@@ -35,7 +35,7 @@ recorder:
 panel_iframe:
   zigbee:
     title: "Zigbee2mqtt"
-    url: "http://${ini[homeassistant.domain]}:8080"
+    url: "${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.zigbee2mqtt_subpath]}"
     icon: mdi:zigbee
 EOF
 
