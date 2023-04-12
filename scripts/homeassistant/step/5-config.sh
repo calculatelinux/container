@@ -34,9 +34,13 @@ recorder:
 
 panel_iframe:
   zigbee:
-    title: "Zigbee2mqtt"
-    url: "${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.zigbee2mqtt_subpath]}"
+    title: Zigbee2mqtt
+    url: ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.zigbee2mqtt_subpath]}
     icon: mdi:zigbee
+  configurator:
+    title: Configurator
+    icon: mdi:wrench
+    url: ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.hass-configurator_subpath]}
 EOF
 
 echo

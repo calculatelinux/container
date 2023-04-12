@@ -8,7 +8,7 @@ description="Allows you to use your Zigbee devices without the vendor's bridge o
 user="zigbee2mqtt"
 group="zigbee2mqtt"
 
-command="/var/calculate/www/zigbee2mqtt/zigbee2mqtt-live/.venv/bin/npm"
+command="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live/.venv/bin/npm"
 directory="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live"
 command_args="start"
 command_user="${user}:${group}"
@@ -16,7 +16,7 @@ command_background="yes"
 pidfile="/run/${RC_SVCNAME}.pid"
 output_log="/var/log/${RC_SVCNAME}.log"
 error_log="${output_log}"
-export PATH="/var/calculate/www/zigbee2mqtt/zigbee2mqtt-live/.venv/bin:$PATH"
+export PATH="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live/.venv/bin:$PATH"
 
 depend() {
 	need mosquitto

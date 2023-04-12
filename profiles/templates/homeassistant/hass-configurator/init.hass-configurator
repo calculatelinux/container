@@ -1,0 +1,22 @@
+# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/var/calculate/www/hass-configurator/hass-configurator-live)!=
+#!/sbin/openrc-run
+# Copyright 2023 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+description="Filesystem-browser and text-editor"
+
+user="hass-configurator"
+group="hass-configurator"
+
+command="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live/.venv/bin/hass-configurator"
+directory="/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live"
+command_args="/var/calculate/hass-configurator/settings.conf"
+command_user="${user}:${group}"
+command_background="yes"
+pidfile="/run/${RC_SVCNAME}.pid"
+output_log="/var/log/${RC_SVCNAME}.log"
+error_log="${output_log}"
+
+start_pre() {
+	checkpath --file --owner $user --mode 0644 $output_log
+}

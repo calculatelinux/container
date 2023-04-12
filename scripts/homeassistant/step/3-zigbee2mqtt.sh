@@ -52,13 +52,13 @@ echo '. ~/zigbee2mqtt-live/.venv/bin/activate' >> .bashrc
 echo '. ~/zigbee2mqtt-live/.venv/bin/activate' >> .bash_profile
 
 ebegin 'Setup zigbee2mqtt'
-mv zigbee2mqtt-live/data/configuration.yaml zigbee2mqtt-live/data/configuration.yaml.old
-cat > zigbee2mqtt-live/data/configuration.yaml << EOF
+mv /etc/zigbee2mqtt/configuration.yaml /etc/zigbee2mqtt/configuration.yaml.old
+cat > /etc/zigbee2mqtt/configuration.yaml << EOF
 # Home Assistant integration (MQTT discovery)
 homeassistant: true
 
 # allow new devices to join
-permit_join: true
+permit_join: false
 
 # MQTT settings
 mqtt:

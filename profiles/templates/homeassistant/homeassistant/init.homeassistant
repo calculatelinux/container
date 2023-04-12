@@ -1,6 +1,6 @@
 # Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=# exists(/etc/homeassistant/configuration.yaml)!=
 #!/sbin/openrc-run
-# Copyright 2022 Gentoo Authors
+# Copyright 2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 description="Open-source home automation platform"
@@ -12,20 +12,20 @@ serverlog="/var/log/homeassistant/server.log"
 warningslog="/var/log/homeassistant/warnings.log"
 retry="20"
 
-command=/var/calculate/www/homeassistant/homeassistant-live/bin/hass
-directory=/var/calculate/www/homeassistant
+command=/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live/bin/hass
+directory=/var/calculate/www/${RC_SVCNAME}/${RC_SVCNAME}-live
 
 start_stop_daemon_args="--user $user --stdout $stdoutlog --stderr $serverlog --wait 10"
 
 command_args="
-	--config /var/calculate/homeassistant
+	--config /var/calculate/${RC_SVCNAME}
 	--log-file $warningslog
 	--log-rotate-days 9
         ${HASS_OPTS}
 "
 
 command_background=yes
-pidfile=/run/homeassistant.pid
+pidfile=/run/${RC_SVCNAME}.pid
 
 depend() {
     need net nginx postgresql
