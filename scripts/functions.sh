@@ -27,3 +27,21 @@ arr_to_list(){
 	list="[$list]"
 	echo $list
 }
+
+get_last_ver(){
+	local project=$1
+	local hosting=$2
+	case $hosting in
+		pip)
+			curl -s https://pypi.org/pypi/${project}/json | jq -r '.releases | keys[]' | grep -Ev [ab][0-9]+$ | tail -1
+		;;
+		github)
+			curl -s https://api.github.com/repos/${project}/releases/latest | grep tag_name | cut -d '"' -f 4
+		;;
+	esac
+}
+
+get_live_ver(){
+	local current_ver=$(readlink -f $1)
+	echo ${current_ver#*-}
+}

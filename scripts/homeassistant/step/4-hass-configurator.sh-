@@ -7,7 +7,7 @@ export PATH="/lib/rc/bin:$PATH"
 test -e ~/hass-configurator-live && exit
 
 SCRIPT=$(readlink -f $0)
-[[ $UID == 0 ]] && exec su - hass-configurator -c "$SCRIPT"
+[[ $UID == 0 ]] && exec su - hass-configurator -s /bin/bash -c "$SCRIPT"
 
 . /var/db/repos/container/scripts/functions.sh
 . /var/db/repos/calculate/scripts/ini.sh
@@ -41,7 +41,7 @@ ebegin 'Setup HASS Configurator'
 if [[ ! -e /etc/hass-configurator/settings.conf ]]; then
 	cat > /etc/hass-configurator/settings.conf << EOF
 {
-	"LISTENIP": "0.0.0.0",
+	"LISTENIP": "127.0.0.1",
 	"PORT": 3218,
 	"GIT": false,
 	"BASEPATH": null,

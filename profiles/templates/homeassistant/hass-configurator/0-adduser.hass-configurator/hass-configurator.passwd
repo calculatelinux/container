@@ -1,2 +1,2 @@
 # Calculate path=/etc name=#-cut(1,.)-# append=after protected
-hass-configurator:x:997:997:Filesystem-browser and text-editor:/var/calculate/www/hass-configurator:/bin/bash
+hass-configurator:x:997:997:Filesystem-browser and text-editor:/var/calculate/www/hass-configurator:/sbin/nologin

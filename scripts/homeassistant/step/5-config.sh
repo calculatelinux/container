@@ -1,28 +1,43 @@
-#!/bin/bash
+#
+# Функция configure() настраивает Home Assistant
+#
+configure() {
+	# выйдем если все настроено
+	grep -q ^http: /etc/homeassistant/configuration.yaml &>/dev/null && return || true
 
-set -ueo pipefail
-export PATH="/lib/rc/bin:$PATH"
+	local home_dir=/var/calculate/www/homeassistant
+	local live_dir="$home_dir/homeassistant-live"
+	local config_dir="/var/calculate/homeassistant"
 
-test -e /etc/homeassistant/configuration.yaml && exit
+	if [[ -e $config_dir ]]; then
+		return
+	else
+		mkdir -p $config_dir
+		chmod 700 $config_dir
+		chown homeassistant: $config_dir
+	fi
 
-SCRIPT=$(readlink -f $0)
-[[ $UID == 0 ]] && exec su - homeassistant -c "$SCRIPT"
-. homeassistant-live/bin/activate
+	su - homeassistant -s /bin/bash -c "$(cat <<- EOF
+		set -ueo pipefail
+		export PATH="/lib/rc/bin:$PATH"
 
-. /var/db/repos/container/scripts/functions.sh
-. /var/db/repos/calculate/scripts/ini.sh
+		source $live_dir/bin/activate
 
-hass --config /etc/homeassistant >/dev/null &
-id_hass=$!
+		hass --config /etc/homeassistant >/dev/null &
+		id_hass=\$!
 
-echo; einfon "Check for the first start Home Assistant "
-while ! curl http://127.0.0.1:8123 2>/dev/null; do
-	echo -n .
-	sleep 1
-done
-kill $id_hass
+		echo
+		einfon "Check for the first start Home Assistant "
+		while ! curl http://127.0.0.1:8123 2>/dev/null; do
+			echo -n .
+			sleep 1
+		done
+		kill \$id_hass
+		eend
+	EOF
+	)"
 
-cat >> /etc/homeassistant/configuration.yaml <<EOF
+	cat >> /etc/homeassistant/configuration.yaml << EOF
 
 http:
   server_host: 127.0.0.1
@@ -42,6 +57,4 @@ panel_iframe:
     icon: mdi:wrench
     url: ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.hass-configurator_subpath]}
 EOF
-
-echo
-eend
+}
