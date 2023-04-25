@@ -31,8 +31,8 @@ configure() {
 	fi
 
 	if [[ ! -e $home_dir ]]; then
-		mkdir -p $home_dir
-		chmod 700 $home_dir/versions
+		mkdir -p $home_dir/versions
+		chmod 700 $home_dir
 		chown -R hass-configurator: $home_dir
 	fi
 
