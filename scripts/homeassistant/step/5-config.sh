@@ -2,29 +2,29 @@
 # Функция configure() настраивает Home Assistant
 #
 configure() {
-	# выйдем если все настроено
-	grep -q ^http: /var/calculate/homeassistant/configuration.yaml &>/dev/null && return || true
-
 	local home_dir=/var/calculate/www/homeassistant
-	local live_dir="$home_dir/homeassistant-live"
-	local config_dir="/var/calculate/homeassistant"
+	local live_dir="${home_dir}/homeassistant-live"
+	local conf_dir="/var/calculate/homeassistant"
 
-	if [[ ! -e $config_dir ]]; then
-		mkdir -p $config_dir
-		chmod 700 $config_dir
-		chown homeassistant: $config_dir
+	# выйдем если все настроено
+	grep -q ^http: ${conf_dir}/configuration.yaml &>/dev/null && return || true
+
+	if [[ ! -e $conf_dir ]]; then
+		mkdir -p $conf_dir
+		chmod 700 $conf_dir
+		chown homeassistant: $conf_dir
 	fi
 
-	touch $log_dir/config.log
-	chown homeassistant: $log_dir/config.log
+	touch ${log_dir}/config.log
+	chown homeassistant: ${log_dir}/config.log
 
 	su - homeassistant -s /bin/bash -c "$(cat <<- EOF
 		set -ueo pipefail
 		export PATH="/lib/rc/bin:$PATH"
 
-		source $live_dir/bin/activate
+		source ${live_dir}/bin/activate
 
-		hass --config /var/calculate/homeassistant &>>$log_dir/config.log &
+		hass --config ${conf_dir} &>>${log_dir}/config.log &
 		id_hass=\$!
 
 		echo
@@ -38,7 +38,7 @@ configure() {
 	EOF
 	)"
 
-	cat >> /var/calculate/homeassistant/configuration.yaml << EOF
+	cat >> ${conf_dir}/configuration.yaml << EOF
 
 http:
   server_host: 127.0.0.1

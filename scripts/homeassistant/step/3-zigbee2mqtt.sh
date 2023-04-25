@@ -15,6 +15,7 @@ configure() {
 	local work_dir="$home_dir/versions/zigbee2mqtt-$last_ver"
 	local live_dir="$home_dir/zigbee2mqtt-live"
 	local live_ver="$(get_live_ver $live_dir)"
+	local conf_dir="/var/calculate/zigbee2mqtt"
 
 	# проверим на наличие устройства
 	if [[ ${ini[zigbee2mqtt.dev]:-} == "" ]]; then
@@ -32,13 +33,18 @@ configure() {
 	fi
 
 	if [[ ! -e $home_dir ]]; then
-		mkdir -p $home_dir
-		chmod 700 $home_dir/versions
+		mkdir -p $home_dir/versions
+		chmod 700 $home_dir
 		chown -R zigbee2mqtt: $home_dir
 	fi
+	if [[ ! -e $conf_dir ]]; then
+		mkdir -p $conf_dir
+		chmod 700 $conf_dir
+		chown -R zigbee2mqtt: $conf_dir
+	fi
 
-	touch $log_dir/zigbee2mqtt.log
-	chown zigbee2mqtt: $log_dir/zigbee2mqtt.log
+	touch ${log_dir}/zigbee2mqtt.log
+	chown zigbee2mqtt: ${log_dir}/zigbee2mqtt.log
 
 	if [[ $live_ver != $last_ver ]]; then
 		if [[ $live_ver == '' ]]; then
@@ -64,11 +70,11 @@ configure() {
 			eend
 
 			# вынесем настройки
-			if [[ -z "$(ls -A /var/calculate/zigbee2mqtt)" ]]; then
-				mv versions/zigbee2mqtt-${last_ver}/data/* /var/calculate/zigbee2mqtt
+			if [[ -z "$(ls -A $conf_dir)" ]]; then
+				mv versions/zigbee2mqtt-${last_ver}/data/* ${conf_dir}
 			fi
 			rm -rf versions/zigbee2mqtt-${last_ver}/data
-			ln -s /var/calculate/zigbee2mqtt versions/zigbee2mqtt-${last_ver}/data
+			ln -s ${conf_dir} versions/zigbee2mqtt-${last_ver}/data
 			
 			ebegin 'Create a virtualenv'
 			python -m venv zigbee2mqtt-live/.venv
@@ -79,20 +85,20 @@ configure() {
 			eend
 			
 			ebegin 'Upgrade pip, wheel and setuptools'
-			pip install --upgrade pip wheel setuptools &>>$log_dir/zigbee2mqtt.log
+			pip install --upgrade pip wheel setuptools &>>${log_dir}/zigbee2mqtt.log
 			eend
 			
 			ebegin 'Install Node environment'
-			pip install nodeenv &>>$log_dir/zigbee2mqtt.log
+			pip install nodeenv &>>${log_dir}/zigbee2mqtt.log
 			eend
 			
 			ebegin 'Init Node environment ${ini[zigbee2mqtt.nodeenv]}'
-			nodeenv -p -n ${ini[zigbee2mqtt.nodeenv]} &>>$log_dir/zigbee2mqtt.log
+			nodeenv -p -n ${ini[zigbee2mqtt.nodeenv]} &>>${log_dir}/zigbee2mqtt.log
 			eend
 			
 			einfo 'Install dependencies'
 			cd zigbee2mqtt-live
-			npm ci &>>$log_dir/zigbee2mqtt.log
+			npm ci &>>${log_dir}/zigbee2mqtt.log
 			cd
 		EOF
 		)"
@@ -101,8 +107,8 @@ configure() {
 			eval $__result=zigbee2mqtt # демон который следует перезагрузить
 		else
 			ebegin 'Setup zigbee2mqtt'
-			mv /var/calculate/zigbee2mqtt/configuration.yaml /var/calculate/zigbee2mqtt/configuration.yaml.old
-			cat > /var/calculate/zigbee2mqtt/configuration.yaml << EOF
+			mv ${conf_dir}/configuration.yaml ${conf_dir}/configuration.yaml.old
+			cat > ${conf_dir}/configuration.yaml << EOF
 # Home Assistant integration (MQTT discovery)
 homeassistant: true
 
@@ -127,7 +133,7 @@ frontend:
   port: 8080
   host: 127.0.0.1
 EOF
-			chown zigbee2mqtt: /var/calculate/zigbee2mqtt/configuration.yaml
+			chown zigbee2mqtt: ${conf_dir}/configuration.yaml
 			eend
 		fi
 	fi

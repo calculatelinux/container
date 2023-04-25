@@ -14,6 +14,7 @@ configure() {
 	local work_dir="$home_dir/versions/hass-configurator-$last_ver"
 	local live_dir="$home_dir/hass-configurator-live"
 	local live_ver="$(get_live_ver $live_dir)"
+	local conf_dir="/var/calculate/hass-configurator"
 
 	if [[ $action == 'check' ]]; then
 		if [[ $live_ver == $last_ver ]]; then
@@ -26,7 +27,7 @@ configure() {
 	fi
 
 	# выйдем если все настроено
-        if [[ -e /var/calculate/hass-configurator/settings.conf ]]; then
+        if [[ -e $conf_dir/settings.conf ]]; then
 		return
 	fi
 
@@ -35,9 +36,14 @@ configure() {
 		chmod 700 $home_dir
 		chown -R hass-configurator: $home_dir
 	fi
+	if [[ ! -e $conf_dir ]]; then
+		mkdir -p $conf_dir
+		chmod 700 $conf_dir
+		chown -R hass-configurator: $conf_dir
+	fi
 
-	touch $log_dir/hass-configurator.log
-	chown hass-configurator: $log_dir/hass-configurator.log
+	touch ${log_dir}/hass-configurator.log
+	chown hass-configurator: ${log_dir}/hass-configurator.log
 
 	if [[ $live_ver != $last_ver ]]; then
 		if [[ $live_ver == '' ]]; then
@@ -52,7 +58,7 @@ configure() {
 
 			ebegin Download hass-configurator ${last_ver}
 			wget https://github.com/danielperna84/hass-configurator/archive/refs/tags/${last_ver}.zip \
-				-O hass-configurator-${last_ver}.zip &>>$log_dir/hass-configurator.log
+				-O hass-configurator-${last_ver}.zip &>>${log_dir}/hass-configurator.log
 			eend
 
 			ebegin 'Extract the archive'
@@ -70,11 +76,11 @@ configure() {
 			eend
 			
 			ebegin 'Upgrade pip and wheel'
-			pip install --upgrade pip wheel &>>$log_dir/hass-configurator.log
+			pip install --upgrade pip wheel &>>${log_dir}/hass-configurator.log
 			eend
 			
 			ebegin 'Install HASS Configurator'
-			pip install hass-configurator &>>$log_dir/hass-configurator.log
+			pip install hass-configurator &>>${log_dir}/hass-configurator.log
 			eend
 		EOF
 		)"
@@ -84,7 +90,7 @@ configure() {
 		eval $__result=hass-assistant # демон который следует перезагрузить
 	else
 		ebegin 'Setup HASS Configurator'
-		cat > /var/calculate/hass-configurator/settings.conf << EOF
+		cat > $conf_dir/settings.conf << EOF
 {
 	"LISTENIP": "127.0.0.1",
 	"PORT": 3218,
@@ -112,7 +118,7 @@ configure() {
 	"NOTIFY_SERVICE": "persistent_notification.create"
 }
 EOF
-		chown hass-configurator: /var/calculate/hass-configurator/settings.conf
+		chown hass-configurator: $conf_dir/settings.conf
 		eend
 	fi
 }

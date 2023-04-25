@@ -30,8 +30,8 @@ configure() {
 		chown -R homeassistant: $home_dir
 	fi
 
-	touch $log_dir/homeassistant.log
-	chown homeassistant: $log_dir/homeassistant.log
+	touch ${log_dir}/homeassistant.log
+	chown homeassistant: ${log_dir}/homeassistant.log
 	
 	if [[ $live_ver != $last_ver ]]; then
 		if [[ $live_ver == '' ]]; then
@@ -51,15 +51,15 @@ configure() {
 			eend
 	
 			ebegin 'Install all Python dependencies'
-			python -m pip install wheel &>>$log_dir/homeassistant.log
+			python -m pip install wheel &>>${log_dir}/homeassistant.log
 			eend
 	
 			ebegin 'Install Home Assistant $last_ver'
-			pip install homeassistant==$last_ver &>>$log_dir/homeassistant.log
+			pip install homeassistant==$last_ver &>>${log_dir}/homeassistant.log
 			eend
 	
 			ebegin 'Install PostgreSQL dependencies'
-			pip install psycopg2 &>>$log_dir/homeassistant.log
+			pip install psycopg2 &>>${log_dir}/homeassistant.log
 			eend
 	
 			rm -f $live_dir
