@@ -3,19 +3,20 @@
 #
 configure() {
 	# выйдем если все настроено
-	grep -q ^http: /etc/homeassistant/configuration.yaml &>/dev/null && return || true
+	grep -q ^http: /var/calculate/homeassistant/configuration.yaml &>/dev/null && return || true
 
 	local home_dir=/var/calculate/www/homeassistant
 	local live_dir="$home_dir/homeassistant-live"
 	local config_dir="/var/calculate/homeassistant"
 
-	if [[ -e $config_dir ]]; then
-		return
-	else
+	if [[ ! -e $config_dir ]]; then
 		mkdir -p $config_dir
 		chmod 700 $config_dir
 		chown homeassistant: $config_dir
 	fi
+
+	touch $log_dir/config.log
+	chown homeassistant: $log_dir/config.log
 
 	su - homeassistant -s /bin/bash -c "$(cat <<- EOF
 		set -ueo pipefail
@@ -23,11 +24,11 @@ configure() {
 
 		source $live_dir/bin/activate
 
-		hass --config /etc/homeassistant >/dev/null &
+		hass --config /var/calculate/homeassistant &>>$log_dir/config.log &
 		id_hass=\$!
 
 		echo
-		einfon "Check for the first start Home Assistant "
+		einfon "Waiting for the first start Home Assistant "
 		while ! curl http://127.0.0.1:8123 2>/dev/null; do
 			echo -n .
 			sleep 1
@@ -37,7 +38,7 @@ configure() {
 	EOF
 	)"
 
-	cat >> /etc/homeassistant/configuration.yaml << EOF
+	cat >> /var/calculate/homeassistant/configuration.yaml << EOF
 
 http:
   server_host: 127.0.0.1
@@ -48,13 +49,22 @@ recorder:
   db_url: postgresql://${ini[postgresql.homeassistant_user]}:${ini[postgresql.homeassistant_password]}@127.0.0.1/${ini[postgresql.homeassistant_database]}
 
 panel_iframe:
+EOF
+	if [[ -e /var/calculate/zigbee2mqtt ]]; then
+		cat >> /var/calculate/homeassistant/configuration.yaml << EOF
   zigbee:
     title: Zigbee2mqtt
     url: ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.zigbee2mqtt_subpath]}
     icon: mdi:zigbee
+EOF
+	fi
+
+	if [[ -e /var/calculate/hass-configurator ]]; then
+		cat >> /var/calculate/homeassistant/configuration.yaml << EOF
   configurator:
     title: Configurator
     icon: mdi:wrench
     url: ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]}/${ini[nginx.hass-configurator_subpath]}
 EOF
+	fi
 }

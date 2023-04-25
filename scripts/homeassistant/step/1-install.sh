@@ -13,7 +13,7 @@ configure() {
 	local work_dir="$home_dir/versions/homeassistant-$last_ver"
 	local live_dir="$home_dir/homeassistant-live"
 	local live_ver="$(get_live_ver $live_dir)"
-	
+
 	if [[ $action == 'check' ]]; then
 		if [[ $live_ver == $last_ver ]]; then
 			einfo "homeassistant: the latest version is installed $live_ver"
@@ -29,12 +29,15 @@ configure() {
 		chmod 700 $home_dir
 		chown homeassistant: $home_dir
 	fi
+
+	touch $log_dir/homeassistant.log
+	chown homeassistant: $log_dir/homeassistant.log
 	
 	if [[ $live_ver != $last_ver ]]; then
-		if [[ $live_ver != '' ]]; then
-			echo Update Home Assistant
-		else
+		if [[ $live_ver == '' ]]; then
 			echo Install Home Assistant
+		else
+			echo Update Home Assistant
 		fi
 	
 		su - homeassistant -s /bin/bash -c "$(cat <<- EOF
@@ -48,15 +51,15 @@ configure() {
 			eend
 	
 			ebegin 'Install all Python dependencies'
-			python -m pip install wheel &>>/tmp/homeassistant.log
+			python -m pip install wheel &>>$log_dir/homeassistant.log
 			eend
 	
 			ebegin 'Install Home Assistant $last_ver'
-			pip install homeassistant==$last_ver &>>/tmp/homeassistant.log
+			pip install homeassistant==$last_ver &>>$log_dir/homeassistant.log
 			eend
 	
 			ebegin 'Install PostgreSQL dependencies'
-			pip install psycopg2 &>>/tmp/homeassistant.log
+			pip install psycopg2 &>>$log_dir/homeassistant.log
 			eend
 	
 			rm -f $live_dir

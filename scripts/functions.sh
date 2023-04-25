@@ -42,6 +42,9 @@ get_last_ver(){
 }
 
 get_live_ver(){
+	if [[ ! -e $1 ]]; then
+		exit
+	fi
 	local current_ver=$(readlink -f $1)
-	echo ${current_ver#*-}
+	echo ${current_ver##*-}
 }

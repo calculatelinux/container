@@ -16,6 +16,11 @@ configure() {
 	local live_dir="$home_dir/zigbee2mqtt-live"
 	local live_ver="$(get_live_ver $live_dir)"
 
+	# проверим на наличие устройства
+	if [[ ${ini[zigbee2mqtt.dev]:-} == "" ]]; then
+		return
+	fi
+
 	if [[ $action == 'check' ]]; then
 		if [[ $live_ver == $last_ver ]]; then
 			einfo "zigbee2mqtt: the latest version is installed $live_ver"
@@ -32,11 +37,14 @@ configure() {
 		chown zigbee2mqtt: $home_dir
 	fi
 
+	touch $log_dir/zigbee2mqtt.log
+	chown zigbee2mqtt: $log_dir/zigbee2mqtt.log
+
 	if [[ $live_ver != $last_ver ]]; then
-		if [[ $live_ver != '' ]]; then
-			echo Update Zigbee2MQTT
-		else
+		if [[ $live_ver == '' ]]; then
 			echo Install Zigbee2MQTT
+		else
+			echo Update Zigbee2MQTT
 		fi
 
 		su - zigbee2mqtt -s /bin/bash -c "$(cat <<- EOF
@@ -71,28 +79,30 @@ configure() {
 			eend
 			
 			ebegin 'Upgrade pip, wheel and setuptools'
-			pip install --upgrade pip wheel setuptools &>>/tmp/zigbee2mqtt.log
+			pip install --upgrade pip wheel setuptools &>>$log_dir/zigbee2mqtt.log
 			eend
 			
-			ebegin 'Install node environment'
-			pip install nodeenv &>>/tmp/zigbee2mqtt.log
+			ebegin 'Install Node environment'
+			pip install nodeenv &>>$log_dir/zigbee2mqtt.log
 			eend
 			
-			ebegin 'Init node environment ${ini[zigbee2mqtt.nodeenv]}'
-			nodeenv -p -n ${ini[zigbee2mqtt.nodeenv]} &>>/tmp/zigbee2mqtt.log
+			ebegin 'Init Node environment ${ini[zigbee2mqtt.nodeenv]}'
+			nodeenv -p -n ${ini[zigbee2mqtt.nodeenv]} &>>$log_dir/zigbee2mqtt.log
 			eend
 			
 			einfo 'Install dependencies'
 			cd zigbee2mqtt-live
-			npm ci &>>/tmp/zigbee2mqtt.log
+			npm ci &>>$log_dir/zigbee2mqtt.log
 			cd
 		EOF
 		)"
 
-		if [[ $live_ver == '' ]]; then
+		if [[ $live_ver != '' ]]; then
+			eval $__result=zigbee2mqtt # демон который следует перезагрузить
+		else
 			ebegin 'Setup zigbee2mqtt'
-			mv /etc/zigbee2mqtt/configuration.yaml /etc/zigbee2mqtt/configuration.yaml.old
-			cat > /etc/zigbee2mqtt/configuration.yaml << EOF
+			mv /var/calculate/zigbee2mqtt/configuration.yaml /var/calculate/zigbee2mqtt/configuration.yaml.old
+			cat > /var/calculate/zigbee2mqtt/configuration.yaml << EOF
 # Home Assistant integration (MQTT discovery)
 homeassistant: true
 
@@ -117,10 +127,8 @@ frontend:
   port: 8080
   host: 127.0.0.1
 EOF
-			chown zigbee2mqtt: /etc/zigbee2mqtt/configuration.yaml
+			chown zigbee2mqtt: /var/calculate/zigbee2mqtt/configuration.yaml
 			eend
-
-			eval $__result=zigbee2mqtt # демон который следует перезагрузить
 		fi
 	fi
 }
