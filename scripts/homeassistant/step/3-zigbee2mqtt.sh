@@ -34,7 +34,7 @@ configure() {
 	if [[ ! -e $home_dir ]]; then
 		mkdir -p $home_dir
 		chmod 700 $home_dir/versions
-		chown zigbee2mqtt: $home_dir
+		chown -R zigbee2mqtt: $home_dir
 	fi
 
 	touch $log_dir/zigbee2mqtt.log

@@ -27,7 +27,7 @@ configure() {
 	if [[ ! -e $home_dir ]]; then
 		mkdir -p $home_dir/versions
 		chmod 700 $home_dir
-		chown homeassistant: $home_dir
+		chown -R homeassistant: $home_dir
 	fi
 
 	touch $log_dir/homeassistant.log

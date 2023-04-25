@@ -33,7 +33,7 @@ configure() {
 	if [[ ! -e $home_dir ]]; then
 		mkdir -p $home_dir
 		chmod 700 $home_dir/versions
-		chown hass-configurator: $home_dir
+		chown -R hass-configurator: $home_dir
 	fi
 
 	touch $log_dir/hass-configurator.log
