@@ -6,8 +6,8 @@
 # $2 - возвращает имя модуля для перезагрузки в случае выполненного обновления
 # Guide: https://github.com/danielperna84/hass-configurator
 configure() {
-	local action=$1
-	local __result=$2
+	local action=${1:-}
+	local __result=${2:-}
 
 	local home_dir=/var/calculate/www/hass-configurator
 	local last_ver="$(get_last_ver danielperna84/hass-configurator github)"
@@ -17,17 +17,10 @@ configure() {
 	local conf_dir="/var/calculate/hass-configurator"
 
 	if [[ $action == 'check' ]]; then
-		if [[ $live_ver == $last_ver ]]; then
-			einfo "hass-configurator: the latest version is installed $live_ver"
-		else
+		if [[ $live_ver != $last_ver ]]; then
 			einfo "hass-configurator: $last_ver update available, $live_ver installed"
 			eval $__result=1 # наличие обновления
 		fi
-		return
-	fi
-
-	# выйдем если все настроено
-        if [[ -e $conf_dir/settings.conf ]]; then
 		return
 	fi
 
@@ -57,6 +50,7 @@ configure() {
 			export PATH="/lib/rc/bin:$PATH"
 
 			ebegin Download hass-configurator ${last_ver}
+			test -e ${work_dir} && rm -rf ${work_dir} # удалим если было прервано
 			wget https://github.com/danielperna84/hass-configurator/archive/refs/tags/${last_ver}.zip \
 				-O hass-configurator-${last_ver}.zip &>>${log_dir}/hass-configurator.log
 			eend
@@ -64,15 +58,14 @@ configure() {
 			ebegin 'Extract the archive'
 			unzip -q -d versions hass-configurator-${last_ver}.zip
 			rm hass-configurator-${last_ver}.zip
-			ln -sf versions/hass-configurator-${last_ver} hass-configurator-live
 			eend
 			
 			ebegin 'Create a virtualenv'
-			python -m venv hass-configurator-live/.venv
+			python -m venv ${work_dir}/.venv
 			eend
 			
 			ebegin 'Activate environment'
-			source hass-configurator-live/.venv/bin/activate
+			source ${work_dir}/.venv/bin/activate
 			eend
 			
 			ebegin 'Upgrade pip and wheel'
@@ -82,15 +75,17 @@ configure() {
 			ebegin 'Install HASS Configurator'
 			pip install hass-configurator &>>${log_dir}/hass-configurator.log
 			eend
+
+			ln -snf versions/hass-configurator-${last_ver} $live_dir
 		EOF
 		)"
-	fi
 
-	if [[ $live_ver != '' ]]; then
-		eval $__result=hass-assistant # демон который следует перезагрузить
-	else
-		ebegin 'Setup HASS Configurator'
-		cat > $conf_dir/settings.conf << EOF
+		if [[ $live_ver != '' ]]; then
+			rc-service -s hass-configurator restart
+			echo
+		else
+			ebegin 'Setup HASS Configurator'
+			cat > $conf_dir/settings.conf << EOF
 {
 	"LISTENIP": "127.0.0.1",
 	"PORT": 3218,
@@ -118,8 +113,10 @@ configure() {
 	"NOTIFY_SERVICE": "persistent_notification.create"
 }
 EOF
-		chown hass-configurator: $conf_dir/settings.conf
-		eend
+			chown hass-configurator: $conf_dir/settings.conf
+			eend
+		fi
 	fi
+
 }
 

@@ -7,8 +7,8 @@
 #
 # Guide: https://www.zigbee2mqtt.io/guide/installation/07_python_virtual_environment.html
 configure() {
-	local action=$1
-	local __result=$2
+	local action=${1:-}
+	local __result=${2:-}
 
 	local home_dir=/var/calculate/www/zigbee2mqtt
 	local last_ver="$(get_last_ver Koenkk/zigbee2mqtt github)"
@@ -17,19 +17,23 @@ configure() {
 	local live_ver="$(get_live_ver $live_dir)"
 	local conf_dir="/var/calculate/zigbee2mqtt"
 
-	# проверим на наличие устройства
-	if [[ ${ini[zigbee2mqtt.dev]:-} == "" ]]; then
-		return
-	fi
-
 	if [[ $action == 'check' ]]; then
-		if [[ $live_ver == $last_ver ]]; then
-			einfo "zigbee2mqtt: the latest version is installed $live_ver"
-		else
+		if [[ $live_ver != $last_ver ]]; then
 			einfo "zigbee2mqtt: $last_ver update available, $live_ver installed"
 			eval $__result=1 # наличие обновления
 		fi
 		return
+	fi
+
+	# проверим на наличие устройства если сервис еще не настроен
+	if [[ ! -e $conf_dir ]]; then
+		if [[ -e /dev/ttyUSB0 ]]; then
+			local file_dev=/dev/ttyUSB0
+		elif [[ -e /dev/ttyACM0 ]]; then
+			local file_dev=/dev/ttyACM0
+		else
+			return
+		fi
 	fi
 
 	if [[ ! -e $home_dir ]]; then
@@ -58,7 +62,7 @@ configure() {
 			export PATH="/lib/rc/bin:$PATH"
 
 			ebegin Download zigbee2mqtt ${last_ver}
-			test -e $work_dir && rm -rf $work_dir
+			test -e ${work_dir} && rm -rf ${work_dir} # удалим если было прервано
 			wget -q https://github.com/Koenkk/zigbee2mqtt/archive/refs/tags/${last_ver}.zip \
 			     -O zigbee2mqtt-${last_ver}.zip
 			eend
@@ -66,7 +70,6 @@ configure() {
 			ebegin 'Extract the archive'
 			unzip -q -d versions zigbee2mqtt-${last_ver}.zip
 			rm zigbee2mqtt-${last_ver}.zip
-			ln -sf versions/zigbee2mqtt-${last_ver} zigbee2mqtt-live
 			eend
 
 			# вынесем настройки
@@ -77,11 +80,11 @@ configure() {
 			ln -s ${conf_dir} versions/zigbee2mqtt-${last_ver}/data
 			
 			ebegin 'Create a virtualenv'
-			python -m venv zigbee2mqtt-live/.venv
+			python -m venv ${work_dir}/.venv
 			eend
 			
 			ebegin 'Activate environment'
-			source zigbee2mqtt-live/.venv/bin/activate
+			source ${work_dir}/.venv/bin/activate
 			eend
 			
 			ebegin 'Upgrade pip, wheel and setuptools'
@@ -100,11 +103,14 @@ configure() {
 			cd zigbee2mqtt-live
 			npm ci &>>${log_dir}/zigbee2mqtt.log
 			cd
+
+			ln -snf versions/zigbee2mqtt-${last_ver} $live_dir
 		EOF
 		)"
 
 		if [[ $live_ver != '' ]]; then
-			eval $__result=zigbee2mqtt # демон который следует перезагрузить
+			rc-service -s zigbee2mqtt restart
+			echo
 		else
 			ebegin 'Setup zigbee2mqtt'
 			mv ${conf_dir}/configuration.yaml ${conf_dir}/configuration.yaml.old
@@ -128,7 +134,7 @@ mqtt:
 # Serial settings
 serial:
   # Location of USB sniffer
-  port: ${ini[zigbee2mqtt.dev]}
+  port: ${file_dev}
 frontend:
   port: 8080
   host: 127.0.0.1

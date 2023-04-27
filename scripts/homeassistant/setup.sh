@@ -5,27 +5,33 @@ export PATH="/lib/rc/bin:$PATH"
 
 source /var/db/repos/calculate/scripts/ini.sh
 source /var/db/repos/container/scripts/functions.sh
-
-action=${1:-}
+script_path=$(dirname $(readlink -f $0))
 
 log_dir=/var/log/calculate/cl-setup
 rm -rf $log_dir
 mkdir -p $log_dir
 
-script_path=$(dirname $(readlink -f $0))
-for script in $script_path/step/*.sh; do
-	source "$script"
-	configure "$action" daemon_name
-	daemon_restart+=(${daemon_name:-})
-done
+# Установка/настройка и проверка обновлений
+configurate() {
+	local check=${1:-}
 
-for i in ${daemon_restart[@]}; do
-	rc-service -s $i stop
-done
+	for step in $script_path/step/*.sh; do
+		source "$step"
+		if [[ $check ]]; then
+			configure check result
+		else
+			configure
+		fi
+	done
+
+	if [[ $check ]]; then
+		return ${result:-}
+	fi
+}
 
 
-
-if [[ ! -e /etc/runlevels/default/homeassistant ]]; then
+if [[ ! -e /var/calculate/homeassistant ]]; then
+	configurate
 
 	echo 'Launch preparation'
 	ebegin 'Final setup'
@@ -36,8 +42,22 @@ if [[ ! -e /etc/runlevels/default/homeassistant ]]; then
 	ebegin 'Starting services'
 	openrc >>$log_dir/setup.log
 	eend
-else
-	openrc
-fi
 
-echo "All is done! Open the link ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]} on your browser."
+	echo "All is done! Open the link \
+		${ini[homeassistant.protocol]}://${ini[homeassistant.domain]} \
+		on your browser."
+else
+	configurate check && {
+		echo 'No updates available.'
+	} || {
+		echo
+		while true; do
+			read -p "Do you wish to install this update (y/n)? " answer
+			case $answer in
+				[Yy]* ) configurate; exit ;;
+				[Nn]* ) exit ;;
+				* ) echo "Please answer yes or no." ;;
+			esac
+		done
+	}
+fi
