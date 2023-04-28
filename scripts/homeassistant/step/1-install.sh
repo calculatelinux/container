@@ -19,7 +19,7 @@ configure() {
 			einfo "homeassistant: $last_ver update available, $live_ver installed"
 			eval $__result=1 # наличие обновления
 		fi
-		return
+		return 0
 	fi
 
 	if [[ ! -e $home_dir ]]; then

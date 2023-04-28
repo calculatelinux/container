@@ -22,7 +22,7 @@ configure() {
 			einfo "zigbee2mqtt: $last_ver update available, $live_ver installed"
 			eval $__result=1 # наличие обновления
 		fi
-		return
+		return 0
 	fi
 
 	# проверим на наличие устройства если сервис еще не настроен
@@ -32,7 +32,7 @@ configure() {
 		elif [[ -e /dev/ttyACM0 ]]; then
 			local file_dev=/dev/ttyACM0
 		else
-			return
+			return 0
 		fi
 	fi
 

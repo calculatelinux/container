@@ -3,7 +3,7 @@
 #
 configure() {
 	if [[ -n "$(ls -A /var/lib/postgresql)" ]]; then
-		return
+		return 0
 	fi
 
 	echo 'Setting up PostgreSQL'

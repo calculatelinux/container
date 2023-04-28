@@ -7,9 +7,26 @@ source /var/db/repos/calculate/scripts/ini.sh
 source /var/db/repos/container/scripts/functions.sh
 script_path=$(dirname $(readlink -f $0))
 
+if [[ ! -e /var/calculate/homeassistant ]]; then
+	first_start=1
+else
+	first_start=
+fi
+
 log_dir=/var/log/calculate/cl-setup
 rm -rf $log_dir
 mkdir -p $log_dir
+
+if [[ $first_start && ! -e /dev/ttyUSB0 && ! -e /dev/ttyACM0 ]]; then
+	while true; do
+		read -p "Zigbee2MQTT device is not found, the configuration will be done without Zigbee to MQTT bridge (y/n)? " answer
+		case $answer in
+			[Yy]* ) break; exit ;;
+			[Nn]* ) exit ;;
+			* ) echo "Please answer yes or no." ;;
+		esac
+	done
+fi
 
 # Установка/настройка и проверка обновлений
 configurate() {
@@ -30,7 +47,7 @@ configurate() {
 }
 
 
-if [[ ! -e /var/calculate/homeassistant ]]; then
+if [[ $first_start ]]; then
 	configurate
 
 	echo 'Launch preparation'
@@ -43,9 +60,7 @@ if [[ ! -e /var/calculate/homeassistant ]]; then
 	openrc >>$log_dir/setup.log
 	eend
 
-	echo "All is done! Open the link \
-		${ini[homeassistant.protocol]}://${ini[homeassistant.domain]} \
-		on your browser."
+	echo "All is done! Open the link ${ini[homeassistant.protocol]}://${ini[homeassistant.domain]} on your browser."
 else
 	configurate check && {
 		echo 'No updates available.'
