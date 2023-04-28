@@ -9,7 +9,8 @@ configure() {
 	local __result=${2:-}
 
 	local home_dir=/var/calculate/www/homeassistant
-	local last_ver="$(get_last_ver homeassistant pip)"
+	ha_ver="$(get_last_ver homeassistant pip)"
+	local last_ver=$ha_ver
 	local work_dir="$home_dir/versions/homeassistant-$last_ver"
 	local live_dir="$home_dir/homeassistant-live"
 	local live_ver="$(get_live_ver $live_dir)"
@@ -44,8 +45,8 @@ configure() {
 	
 			ebegin 'Create a virtualenv'
 			test -e ${work_dir} && rm -rf ${work_dir}
-			python -m venv $work_dir
-			source $work_dir/bin/activate
+			python -m venv ${work_dir}/.venv
+			source ${work_dir}/.venv/bin/activate
 			eend
 	
 			ebegin 'Install all Python dependencies'
