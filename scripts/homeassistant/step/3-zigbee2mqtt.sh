@@ -100,7 +100,7 @@ configure() {
 			eend
 			
 			einfo 'Install dependencies'
-			cd zigbee2mqtt-live
+			cd ${work_dir}
 			npm ci &>>${log_dir}/zigbee2mqtt.log
 			cd
 
