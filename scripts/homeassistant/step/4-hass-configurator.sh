@@ -16,16 +16,21 @@ configure() {
 	local live_ver="$(get_live_ver $live_dir)"
 	local conf_dir="/var/calculate/hass-configurator"
 
+	# отобразим наличие обновления и выйдем
 	if [[ $action == 'check' ]]; then
 		if [[ $live_ver != $last_ver ]]; then
 			einfo "hass-configurator: $last_ver update available, $live_ver installed"
-			eval $__result=1 # наличие обновления
+			eval $__result=1
 		fi
 		return 0
 	fi
 
+	# выйдем если нет обновления
+	[[ $live_ver == $last_ver ]] && return
+
+	# подготовим пути
 	if [[ ! -e $home_dir ]]; then
-		mkdir -p $home_dir/versions
+		mkdir -p ${home_dir}/versions
 		chmod 700 $home_dir
 		chown -R hass-configurator: $home_dir
 	fi
@@ -34,58 +39,57 @@ configure() {
 		chmod 700 $conf_dir
 		chown -R hass-configurator: $conf_dir
 	fi
-
 	touch ${log_dir}/hass-configurator.log
 	chown hass-configurator: ${log_dir}/hass-configurator.log
 
-	if [[ $live_ver != $last_ver ]]; then
-		if [[ $live_ver == '' ]]; then
-			echo Install HASS Configurator
-		else
-			echo Update Configurator
-		fi
+	if [[ $live_ver == '' ]]; then
+		echo Install HASS Configurator
+	else
+		echo Update Configurator
+	fi
 
-		su - hass-configurator -s /bin/bash -c "$(cat <<- EOF
-			set -ueo pipefail
-			export PATH="/lib/rc/bin:$PATH"
+	# выполним настройки от пользователя hass-configurator
+	su - hass-configurator -s /bin/bash -c "$(cat <<- EOF
+		set -ueo pipefail
+		export PATH="/lib/rc/bin:$PATH"
 
-			ebegin Download hass-configurator ${last_ver}
-			test -e ${work_dir} && rm -rf ${work_dir} # удалим если было прервано
-			wget https://github.com/danielperna84/hass-configurator/archive/refs/tags/${last_ver}.zip \
-				-O hass-configurator-${last_ver}.zip &>>${log_dir}/hass-configurator.log
-			eend
+		ebegin Download hass-configurator ${last_ver}
+		test -e ${work_dir} && rm -rf ${work_dir} # удалим если было прервано
+		wget https://github.com/danielperna84/hass-configurator/archive/refs/tags/${last_ver}.zip \
+			-O hass-configurator-${last_ver}.zip &>>${log_dir}/hass-configurator.log
+		eend
 
-			ebegin 'Extract the archive'
-			unzip -q -d versions hass-configurator-${last_ver}.zip
-			rm hass-configurator-${last_ver}.zip
-			eend
-			
-			ebegin 'Create a virtualenv'
-			python -m venv ${work_dir}/.venv
-			eend
-			
-			ebegin 'Activate environment'
-			source ${work_dir}/.venv/bin/activate
-			eend
-			
-			ebegin 'Upgrade pip and wheel'
-			pip install --upgrade pip wheel &>>${log_dir}/hass-configurator.log
-			eend
-			
-			ebegin 'Install HASS Configurator'
-			pip install hass-configurator &>>${log_dir}/hass-configurator.log
-			eend
+		ebegin 'Extract the archive'
+		unzip -q -d versions hass-configurator-${last_ver}.zip
+		rm hass-configurator-${last_ver}.zip
+		eend
+		
+		ebegin 'Create a virtualenv'
+		python -m venv ${work_dir}/.venv
+		eend
+		
+		ebegin 'Activate environment'
+		source ${work_dir}/.venv/bin/activate
+		eend
+		
+		ebegin 'Upgrade pip and wheel'
+		pip install --upgrade pip wheel &>>${log_dir}/hass-configurator.log
+		eend
+		
+		ebegin 'Install HASS Configurator'
+		pip install hass-configurator &>>${log_dir}/hass-configurator.log
+		eend
 
-			ln -snf versions/hass-configurator-${last_ver} $live_dir
-		EOF
-		)"
+		ln -snf versions/hass-configurator-${last_ver} $live_dir
+	EOF
+	)"
 
-		if [[ $live_ver != '' ]]; then
-			rc-service -s hass-configurator restart
-			echo
-		else
-			ebegin 'Setup HASS Configurator'
-			cat > $conf_dir/settings.conf << EOF
+	if [[ $live_ver != '' ]]; then
+		rc-service -s hass-configurator restart
+		echo
+	else
+		ebegin 'Setup HASS Configurator'
+		cat > $conf_dir/settings.conf << EOF
 {
 	"LISTENIP": "127.0.0.1",
 	"PORT": 3218,
@@ -113,9 +117,8 @@ configure() {
 	"NOTIFY_SERVICE": "persistent_notification.create"
 }
 EOF
-			chown hass-configurator: $conf_dir/settings.conf
-			eend
-		fi
+		chown hass-configurator: $conf_dir/settings.conf
+		eend
 	fi
 
 }

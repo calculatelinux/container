@@ -23,7 +23,7 @@ configure() {
 		set -ueo pipefail
 		export PATH="/lib/rc/bin:$PATH"
 
-		source ${work_dir}/.venv/bin/activate
+		source ${work_dir}/bin/activate
 
 		hass --config ${conf_dir} &>>${log_dir}/config.log &
 		id_hass=\$!

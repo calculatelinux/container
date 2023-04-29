@@ -15,59 +15,61 @@ configure() {
 	local live_dir="$home_dir/homeassistant-live"
 	local live_ver="$(get_live_ver $live_dir)"
 
+	# отобразим наличие обновления и выйдем
 	if [[ $action == 'check' ]]; then
 		if [[ $live_ver != $last_ver ]]; then
 			einfo "homeassistant: $last_ver update available, $live_ver installed"
-			eval $__result=1 # наличие обновления
+			eval $__result=1
 		fi
 		return 0
 	fi
 
+	# выйдем если нет обновления
+        [[ $live_ver == $last_ver ]] && return
+
+	# подготовим пути
 	if [[ ! -e $home_dir ]]; then
-		mkdir -p $home_dir/versions
+		mkdir -p ${home_dir}/versions
 		chmod 700 $home_dir
 		chown -R homeassistant: $home_dir
 	fi
-
 	touch ${log_dir}/homeassistant.log
 	chown homeassistant: ${log_dir}/homeassistant.log
 	
-	if [[ $live_ver != $last_ver ]]; then
-		if [[ $live_ver == '' ]]; then
-			echo Install Home Assistant
-		else
-			echo Update Home Assistant
-		fi
+	if [[ $live_ver == '' ]]; then
+		echo Install Home Assistant
+	else
+		echo Update Home Assistant
+	fi
 	
-		su - homeassistant -s /bin/bash -c "$(cat <<- EOF
-			set -ueo pipefail
-			export PATH="/lib/rc/bin:$PATH"
+	su - homeassistant -s /bin/bash -c "$(cat <<- EOF
+		set -ueo pipefail
+		export PATH="/lib/rc/bin:$PATH"
 	
-			ebegin 'Create a virtualenv'
-			test -e ${work_dir} && rm -rf ${work_dir}
-			python -m venv ${work_dir}/.venv
-			source ${work_dir}/.venv/bin/activate
-			eend
+		ebegin 'Create a virtualenv'
+		test -e ${work_dir} && rm -rf ${work_dir}
+		python -m venv ${work_dir}
+		source ${work_dir}/bin/activate
+		eend
 	
-			ebegin 'Install all Python dependencies'
-			python -m pip install wheel &>>${log_dir}/homeassistant.log
-			eend
+		ebegin 'Install all Python dependencies'
+		python -m pip install wheel &>>${log_dir}/homeassistant.log
+		eend
 	
-			ebegin "Install Home Assistant ${last_ver}"
-			pip install homeassistant==${last_ver} &>>${log_dir}/homeassistant.log
-			eend
+		ebegin "Install Home Assistant ${last_ver}"
+		pip install homeassistant==${last_ver} &>>${log_dir}/homeassistant.log
+		eend
 	
-			ebegin 'Install PostgreSQL dependencies'
-			pip install psycopg2 &>>${log_dir}/homeassistant.log
-			eend
+		ebegin 'Install PostgreSQL dependencies'
+		pip install psycopg2 &>>${log_dir}/homeassistant.log
+		eend
 	
-			ln -snf versions/homeassistant-$last_ver $live_dir
-		EOF
-		)"
+		ln -snf versions/homeassistant-$last_ver $live_dir
+	EOF
+	)"
 	
-		if [[ $live_ver != '' ]]; then
-			rc-service -s homeassistant restart
-			echo
-		fi
+	if [[ $live_ver != '' ]]; then
+		rc-service -s homeassistant restart
+		echo
 	fi
 }
