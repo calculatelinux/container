@@ -17,7 +17,7 @@ configure() {
 
 	# отобразим наличие обновления и выйдем
 	if [[ $action == 'check' ]]; then
-		if [[ $live_ver != $last_ver ]]; then
+		if [[ $live_ver && $live_ver != $last_ver ]]; then
 			einfo "homeassistant: $last_ver update available, $live_ver installed"
 			eval $__result=1
 		fi

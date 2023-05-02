@@ -17,6 +17,7 @@ log_dir=/var/log/calculate/cl-setup
 rm -rf $log_dir
 mkdir -p $log_dir
 
+# Выполним проверки
 if [[ $first_start && ! -e /dev/ttyUSB0 && ! -e /dev/ttyACM0 ]]; then
 	while true; do
 		read -p "Zigbee2MQTT device is not found, the configuration will be done without Zigbee to MQTT bridge (y/n)? " answer
@@ -26,6 +27,11 @@ if [[ $first_start && ! -e /dev/ttyUSB0 && ! -e /dev/ttyACM0 ]]; then
 			* ) echo "Please answer yes or no." ;;
 		esac
 	done
+
+	if check_open_port 5432; then
+		echo Error: PostgreSQL port is busy.
+		exit 1
+	fi
 fi
 
 # Установка/настройка и проверка обновлений
