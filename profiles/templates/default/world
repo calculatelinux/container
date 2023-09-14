@@ -1,2 +1,3 @@
 # Calculate env=update ac_update_sync==on path=/var/lib/portage cl_update_world==merge||cl_update_world==rebuild format=world
 app-text/tree
+sys-apps/busybox
