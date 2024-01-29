@@ -1,2 +1,5 @@
 sys-apps/busybox syslog
 sys-apps/calculate-utils -install -client -console -desktop -qt4 -pxe -server
+
+# removed unnecessary dependence
+sys-apps/debianutils -installkernel
