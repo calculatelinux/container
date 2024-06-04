@@ -1,2 +1,0 @@
-# Calculate format=openrc path=/etc/conf.d name=#-cut(1,.)-# protected
-RC_MONITOR_RESTART="taiga taiga-async taiga-events taiga-protected"

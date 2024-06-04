@@ -1,3 +1,0 @@
-# Calculate path=/root name=.pgpass chmod=600 comment=# protected
-localhost:*:*:postgres:#-ini(postgresql.postgres_password)-#
-localhost:*:*:mastodon:#-ini(postgresql.mastodon_password)-#

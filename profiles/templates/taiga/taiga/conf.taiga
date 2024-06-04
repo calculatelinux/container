@@ -1,3 +1,0 @@
-# Calculate format=openrc path=/etc/conf.d name=#-cut(1,.)-#
-export PYTHONUNBUFFERED=true
-export DJANGO_SETTINGS_MODULE=settings.config

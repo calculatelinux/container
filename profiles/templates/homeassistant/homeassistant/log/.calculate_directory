@@ -1,1 +1,0 @@
-# Calculate path=/var/log name=homeassistant chmod=750 chown=homeassistant:homeassistant

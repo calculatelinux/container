@@ -1,7 +1,0 @@
-# Calculate env=update ac_update_sync==on path=/var/lib/portage cl_update_world==merge||cl_update_world==rebuild format=world
-dev-db/postgresql:12
-dev-python/nodeenv
-dev-python/setuptools
-net-misc/rabbitmq-server
-sys-devel/gettext
-www-servers/nginx

@@ -1,5 +1,0 @@
-# Calculate path=/etc name=group format=patch protected
-<reg>usb:x:85:</reg>
-<text>usb:x:85:homeassistant</text>
-<reg>dialout:x:20:</reg>
-<text>dialout:x:20:homeassistant</text>

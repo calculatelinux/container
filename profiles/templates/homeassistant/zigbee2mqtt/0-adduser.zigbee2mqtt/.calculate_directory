@@ -1,1 +1,0 @@
-# Calculate append=skip grep(/etc/passwd,#-cut(1,.)-#)==
