@@ -1,2 +1,0 @@
-# Calculate append=after path=/etc name=#-cut(2,.)-# grep(/etc/#-cut(2,.)-#,#-cut(1,.)-#)== protected
-mastodon:x:1000:1000::/var/calculate/www/mastodon:/bin/bash

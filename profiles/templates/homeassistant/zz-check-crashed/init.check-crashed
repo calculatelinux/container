@@ -1,8 +1,0 @@
-# Calculate path=/etc/init.d name=#-cut(1,.)-# chmod=755 comment=#
-#!/sbin/openrc-run
-# Copyright 2023 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-pidfile="/run/check_crashed.pid"
-command="/var/calculate/bin/check-crashed"
-command_args="${RC_MONITOR_RESTART}"
-command_background=1

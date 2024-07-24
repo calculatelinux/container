@@ -1,1 +1,0 @@
-# Calculate env=install ac_install_merge==on mergepkg(www-servers/nginx)!= append=skip exists(/etc/runlevels/default/homeassistant)!=||exists(/etc/runlevels/default/zigbee2mqtt)!=

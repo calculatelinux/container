@@ -1,2 +1,0 @@
-# Calculate path=/etc name=#-cut(1,.)-# append=after protected
-zigbee2mqtt:x:998:998:A user for zigbee2mqtt:/var/calculate/www/zigbee2mqtt:/sbin/nologin

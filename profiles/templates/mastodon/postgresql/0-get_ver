@@ -1,5 +1,0 @@
-# Calculate run=/bin/bash
-
-ver=$(ls -d /var/db/pkg/dev-db/postgresql-*)
-ver=${ver#*postgresql-}
-echo ${ver%%.*} > /tmp/pgsqlver
